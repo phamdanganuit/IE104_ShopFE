@@ -1,3 +1,4 @@
+/* eslint-disable lines-around-comment */
 // ** Type Import
 import { OwnerStateThemeType } from '.'
 
