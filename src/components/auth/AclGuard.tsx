@@ -1,3 +1,4 @@
+/* eslint-disable newline-before-return */
 // ** React Imports
 import { ReactNode } from 'react'
 
@@ -13,6 +14,7 @@ interface AclGuardProps {
 
 const AclGuard = (props: AclGuardProps) => {
   // ** Props
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { aclAbilities, children, guestGuard = false, authGuard = true } = props
   return <>{children}</>
 }
