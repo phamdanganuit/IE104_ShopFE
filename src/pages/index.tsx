@@ -1,8 +1,12 @@
 'use client'
+import { Box, useTheme } from '@mui/material'
 import Head from 'next/head'
+import CustomTextField from 'src/components/text-field'
 
 export default function Home() {
- 
+  const theme = useTheme()
+  console.log(theme)
+
   return (
     <>
       <Head>
@@ -12,6 +16,9 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <h1>Hello world!</h1>
+      <Box sx={{margin: 6, width: '200px'}}>
+        <CustomTextField id='outlined-basic' label='Outlined' />
+      </Box>
     </>
   )
 }
