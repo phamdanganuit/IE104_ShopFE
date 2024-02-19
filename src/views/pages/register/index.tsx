@@ -34,7 +34,6 @@ const RegisterPage: NextPage<TProps> = () => {
   // state
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isRemember, setIsRemember] = useState(true)
 
   // theme
   const theme = useTheme()
@@ -226,12 +225,21 @@ const RegisterPage: NextPage<TProps> = () => {
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                marginTop: '5px'
               }}
             >
-              <Typography>{'Do you have already account?'}</Typography>
-              <Link href='/login'>{'Login'}</Link>
+              <Typography marginTop={'5px'}>{'Do you have already account?'}</Typography>
+              <Link
+                style={{
+                  color: theme.palette.primary.main
+                }}
+                href='/login'
+              >
+                {'Login'}
+              </Link>
             </Box>
             <Typography sx={{ textAlign: 'center', marginTop: 2 }}>Or</Typography>
             <Box
@@ -247,7 +255,7 @@ const RegisterPage: NextPage<TProps> = () => {
                   xmlns='http://www.w3.org/2000/svg'
                   aria-hidden='true'
                   role='img'
-                  font-size='1.375rem'
+                  fontSize='1.375rem'
                   className='iconify iconify--mdi'
                   width='1em'
                   height='1em'
@@ -264,7 +272,7 @@ const RegisterPage: NextPage<TProps> = () => {
                   xmlns='http://www.w3.org/2000/svg'
                   aria-hidden='true'
                   role='img'
-                  font-size='1.375rem'
+                  fontSize='1.375rem'
                   className='iconify iconify--mdi'
                   width='1em'
                   height='1em'

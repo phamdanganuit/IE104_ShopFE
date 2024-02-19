@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import React, { useState } from 'react'
 
-// Material-UI
+// ** Material-UI
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -10,49 +10,66 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { IconButton, InputAdornment, useTheme } from '@mui/material'
 
-// custom components
+// ** custom components
 import IconifyIcon from 'src/components/Icon'
 import CustomTextField from 'src/components/text-field'
 
-// React Hook Form
+// ** React Hook Form
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
-// images
+// ** images
 import Image from 'next/image'
 import LoginDark from '/public/images/login-dark.png'
 import LoginLight from '/public/images/login-light.png'
 import Link from 'next/link'
 
+// ** hooks
+import { useAuth } from 'src/hooks/useAuth'
+
 type TProps = {}
+
+type TDefaultValues = {
+  email: string
+  password: string
+  confirmPassword: string
+}
 
 const LoginPage: NextPage<TProps> = () => {
   // state
   const [showPassword, setShowPassword] = useState(false)
   const [isRemember, setIsRemember] = useState(true)
 
-  // theme
+  // ** theme
   const theme = useTheme()
+
+  // ** context
+  const { login } = useAuth()
 
   const schema = yup.object().shape({
     email: yup.string().email().required("Email can't be empty."),
     password: yup.string().required("Password can't be empty.")
   })
 
+  const defaultValues: TDefaultValues = {
+    email: '',
+    password: '',
+    confirmPassword: ''
+  }
   const {
     control,
     handleSubmit,
     formState: { errors }
   } = useForm({
-    defaultValues: {
-      email: '',
-      password: ''
-    },
+    defaultValues,
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
   const onsubmit = (data: { email: string; password: string }) => {
+    if (!Object.keys(errors)?.length) {
+      login({ ...data, rememberMe: isRemember })
+    }
     console.log(data)
   }
 
@@ -198,12 +215,21 @@ const LoginPage: NextPage<TProps> = () => {
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                marginTop: '5px'
               }}
             >
-              <Typography>{"Don't have an account?"}</Typography>
-              <Link href='/register'>{' Register'}</Link>
+              <Typography marginTop={'5px'}>{"Don't have an account?"}</Typography>
+              <Link
+                style={{
+                  color: theme.palette.primary.main
+                }}
+                href='/register'
+              >
+                {' Register'}
+              </Link>
             </Box>
             <Typography sx={{ textAlign: 'center', marginTop: 2 }}>Or</Typography>
             <Box
@@ -219,7 +245,7 @@ const LoginPage: NextPage<TProps> = () => {
                   xmlns='http://www.w3.org/2000/svg'
                   aria-hidden='true'
                   role='img'
-                  font-size='1.375rem'
+                  fontSize='1.375rem'
                   className='iconify iconify--mdi'
                   width='1em'
                   height='1em'
@@ -236,7 +262,7 @@ const LoginPage: NextPage<TProps> = () => {
                   xmlns='http://www.w3.org/2000/svg'
                   aria-hidden='true'
                   role='img'
-                  font-size='1.375rem'
+                  fontSize='1.375rem'
                   className='iconify iconify--mdi'
                   width='1em'
                   height='1em'
