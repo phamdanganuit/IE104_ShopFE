@@ -58,6 +58,15 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
       },
       '&.Mui-disabled': {
         backgroundColor: ` ${theme.palette.action.selected} !important`
+      },
+      '& .MuiFormHelperText-root': {
+        lineHeight: 1.154,
+        margin: theme.spacing(1, 0, 0),
+        color: theme.palette.text.secondary,
+        fontSize: theme.typography.body2.fontSize,
+        '&.Mui-error': {
+          color: theme.palette.error.main
+        }
       }
     }
   }
@@ -66,7 +75,9 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
 const CustomTextField = (props: TextFieldProps) => {
   const { size = 'small', InputLabelProps, variant = 'filled', ...rests } = props
 
-  return <TextFieldStyled size={size} variant={variant} InputLabelProps={InputLabelProps} {...rests} />
+  return (
+    <TextFieldStyled size={size} variant={variant} InputLabelProps={{ ...InputLabelProps, shrink: true }} {...rests} />
+  )
 }
 
 export default CustomTextField
