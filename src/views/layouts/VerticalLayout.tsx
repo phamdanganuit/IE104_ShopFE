@@ -11,7 +11,7 @@ import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 
 // ** Layouts
-// import ListVerticalLayout from 'src/views/layouts/ListVerticalLayout'
+import ListVerticalLayout from 'src/views/layouts/ListVerticalLayout'
 
 // ** Components
 import IconifyIcon from 'src/components/Icon'
@@ -63,7 +63,7 @@ const VerticalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
         </IconButton>
       </Toolbar>
       <Divider />
-      {/* <ListVerticalLayout open={open} /> */}
+      <ListVerticalLayout open={open} />
     </Drawer>
   )
 }
