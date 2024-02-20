@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton'
 
 // components
 import Icon from 'src/components/Icon'
-// import UserDropdown from 'src/views/layouts/components/user-dropdown'
+import UserDropdown from 'src/views/layouts/components/user-dropdown'
 // import ModeToggle from 'src/views/layouts/components/mode-toggle'
 // import LanguageDropdown from 'src/views/layouts/components/language-dropdown'
 // import CartProduct from 'src/views/layouts/components/cart-product'
