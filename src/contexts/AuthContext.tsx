@@ -15,6 +15,9 @@ import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './ty
 import { loginAuth } from 'src/services/auth'
 import { CONFIG_API } from 'src/configs/api'
 
+// ** Helpers
+import { clearLocalUserData } from 'src/helpers/storage'
+
 // ** Defaults
 const defaultProvider: AuthValuesType = {
   user: null,
@@ -55,9 +58,8 @@ const AuthProvider = ({ children }: Props) => {
             setUser({ ...response.data.data })
           })
           .catch(() => {
-            localStorage.removeItem('userData')
-            localStorage.removeItem('refreshToken')
-            localStorage.removeItem('accessToken')
+            clearLocalUserData()
+
             setUser(null)
             setLoading(false)
             if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
