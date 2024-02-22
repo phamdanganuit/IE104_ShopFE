@@ -1,7 +1,11 @@
 'use client'
 import { Box, useTheme } from '@mui/material'
 import Head from 'next/head'
+import { ReactNode } from 'react'
 import CustomTextField from 'src/components/text-field'
+
+// layouts
+import LayoutNotApp from 'src/views/layouts/LayoutNotApp'
 
 export default function Home() {
   return (
@@ -19,3 +23,6 @@ export default function Home() {
     </>
   )
 }
+Home.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
+Home.guestGuard = false
+Home.authGuard = false
