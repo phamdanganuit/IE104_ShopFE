@@ -12,13 +12,12 @@ import IconButton from '@mui/material/IconButton'
 import Icon from 'src/components/Icon'
 
 // ** Hooks
-import {  Menu, MenuItem } from '@mui/material'
+import { Menu, MenuItem } from '@mui/material'
 
 // ** config
 import { LANGUAGE_OPTIONS } from 'src/configs/i18n'
 
 type TProps = {}
-
 
 const LanguageDropdown = (props: TProps) => {
   // ** State
@@ -40,7 +39,6 @@ const LanguageDropdown = (props: TProps) => {
   const handleOnchangeLang = (lang: string) => {
     i18n.changeLanguage(lang)
   }
-
 
   return (
     <>

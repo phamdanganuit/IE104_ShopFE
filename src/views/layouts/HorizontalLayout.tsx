@@ -25,7 +25,7 @@ import { Button } from '@mui/material'
 import { useRouter } from 'next/router'
 
 // config
-// import { ROUTE_CONFIG } from 'src/configs/route'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 const drawerWidth: number = 240
 
