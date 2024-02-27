@@ -22,19 +22,19 @@ export const registerAuthAsync = createAsyncThunk(`${serviceName}/register`, asy
   }
 })
 
-// export const updateAuthMeAsync = createAsyncThunk(`${serviceName}/update-me`, async (data: any) => {
-//   const response = await updateAuthMe(data)
+export const updateAuthMeAsync = createAsyncThunk(`${serviceName}/update-me`, async (data: any) => {
+  const response = await updateAuthMe(data)
 
-//   if (response?.data) {
-//     return response
-//   }
+  if (response?.data) {
+    return response
+  }
 
-//   return {
-//     data: null,
-//     message: response?.response?.data?.message,
-//     typeError: response?.response?.data?.typeError
-//   }
-// })
+  return {
+    data: null,
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
+  }
+})
 
 // export const changePasswordMeAsync = createAsyncThunk(`${serviceName}/change-password-me`, async (data: TChangePassword) => {
 //   const response = await changePasswordMe(data)

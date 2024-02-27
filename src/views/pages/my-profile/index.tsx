@@ -46,7 +46,6 @@ import toast from 'react-hot-toast'
 import Spinner from 'src/components/spinner'
 import CustomSelect from 'src/components/custom-select'
 
-
 type TProps = {}
 
 type TDefaultValue = {
@@ -282,7 +281,6 @@ const MyProfilePage: NextPage<TProps> = () => {
                     render={({ field: { onChange, onBlur, value } }) => (
                       <CustomTextField
                         required
-                        
                         fullWidth
                         disabled
                         label={t('Email')}
@@ -365,7 +363,6 @@ const MyProfilePage: NextPage<TProps> = () => {
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <CustomTextField
-                        
                         fullWidth
                         label={t('Full_name')}
                         onChange={onChange}
@@ -385,7 +382,6 @@ const MyProfilePage: NextPage<TProps> = () => {
                     name='address'
                     render={({ field: { onChange, onBlur, value } }) => (
                       <CustomTextField
-                        
                         fullWidth
                         label={t('Address')}
                         onChange={onChange}
@@ -444,7 +440,6 @@ const MyProfilePage: NextPage<TProps> = () => {
                     render={({ field: { onChange, onBlur, value } }) => (
                       <CustomTextField
                         required
-                        
                         fullWidth
                         label={t('Phone_number')}
                         onChange={e => {
