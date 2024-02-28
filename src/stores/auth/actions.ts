@@ -36,16 +36,16 @@ export const updateAuthMeAsync = createAsyncThunk(`${serviceName}/update-me`, as
   }
 })
 
-// export const changePasswordMeAsync = createAsyncThunk(`${serviceName}/change-password-me`, async (data: TChangePassword) => {
-//   const response = await changePasswordMe(data)
+export const changePasswordMeAsync = createAsyncThunk(`${serviceName}/change-password-me`, async (data: TChangePassword) => {
+  const response = await changePasswordMe(data)
 
-//   if (response?.status === 'Success') {
-//     return { ...response, data: 1 }
-//   }
+  if (response?.status === 'Success') {
+    return { ...response, data: 1 }
+  }
 
-//   return {
-//     data: null,
-//     message: response?.response?.data?.message,
-//     typeError: response?.response?.data?.typeError
-//   }
-// })
+  return {
+    data: null,
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
+  }
+})

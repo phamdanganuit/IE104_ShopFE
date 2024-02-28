@@ -113,7 +113,7 @@ const UserDropdown = (props: TProps) => {
     if (userData) {
       setUser({ ...userData })
     }
-  }, [userData])
+}, [userData])
 
   return (
     <React.Fragment>

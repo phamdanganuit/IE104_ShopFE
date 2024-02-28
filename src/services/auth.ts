@@ -52,3 +52,13 @@ export const getAuthMe = async () => {
     return error
   }
 }
+
+export const changePasswordMe = async (data: TChangePassword) => {
+  try {
+    const res = await instanceAxios.patch(`${API_ENDPOINT.AUTH.INDEX}/change-password`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}

@@ -1,5 +1,4 @@
 // ** Redux Imports
-import { Dispatch } from 'redux'
 import { createSlice } from '@reduxjs/toolkit'
 
 // ** Axios Imports
@@ -9,20 +8,20 @@ import { changePasswordMeAsync, registerAuthAsync, serviceName, updateAuthMeAsyn
 import { UserDataType } from 'src/contexts/types'
 
 type TInitialData = {
-  isLoading: boolean,
-  isSuccess: boolean,
-  isError: boolean,
-  message: string,
-  typeError: string,
-  isSuccessUpdateMe: boolean,
-  isErrorUpdateMe: boolean,
-  messageUpdateMe: string,
-  isSuccessChangePassword: boolean,
-  isErrorChangePassword: boolean,
-  messageChangePassword: string,
+  isLoading: boolean
+  isSuccess: boolean
+  isError: boolean
+  message: string
+  typeError: string
+  isSuccessUpdateMe: boolean
+  isErrorUpdateMe: boolean
+  messageUpdateMe: string
+  isSuccessChangePassword: boolean
+  isErrorChangePassword: boolean
+  messageChangePassword: string
   userData: UserDataType | null
 }
-const initialState:TInitialData = {
+const initialState: TInitialData = {
   isLoading: false,
   isSuccess: true,
   isError: false,
