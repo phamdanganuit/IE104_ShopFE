@@ -21,7 +21,7 @@ interface AuthGuardProps {
 const AuthGuard = (props: AuthGuardProps) => {
   // ** Props
   const { children, fallback } = props
-  
+
   // ** auth
   const authContext = useAuth()
 
