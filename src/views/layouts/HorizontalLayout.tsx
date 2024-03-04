@@ -3,7 +3,6 @@ import * as React from 'react'
 
 // ** Next
 import { NextPage } from 'next'
-import Link from 'next/link'
 
 // ** Mui
 import { styled } from '@mui/material/styles'
@@ -17,8 +16,6 @@ import Icon from 'src/components/Icon'
 import UserDropdown from 'src/views/layouts/components/user-dropdown'
 import ModeToggle from 'src/views/layouts/components/mode-toggle'
 import LanguageDropdown from 'src/views/layouts/components/language-dropdown'
-
-// import CartProduct from 'src/views/layouts/components/cart-product'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -65,17 +62,6 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
   const { user } = useAuth()
   const router = useRouter()
 
-  const handleNavigateLogin = () => {
-    if (router.asPath !== '/') {
-      router.replace({
-        pathname: '/login',
-        query: { returnUrl: router.asPath }
-      })
-    } else {
-      router.replace('/login')
-    }
-  }
-
   return (
     <AppBar position='absolute' open={open}>
       <Toolbar
@@ -98,24 +84,15 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
             <Icon icon='ic:round-menu' />
           </IconButton>
         )}
-        <Typography
-          component='h1'
-          variant='h6'
-          color='primary'
-          noWrap
-          sx={{ flexGrow: 1, fontWeight: '600', cursor: 'pointer' }}
-        >
-          <Link style={{ color: 'inherit' }} href={ROUTE_CONFIG.HOME}>
-            LTTD
-          </Link>
+        <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
+          Dashboard
         </Typography>
         <LanguageDropdown />
         <ModeToggle />
-        {/* <CartProduct /> */}
         {user ? (
           <UserDropdown />
         ) : (
-          <Button variant='contained' sx={{ ml: 2, width: 'auto' }} onClick={handleNavigateLogin}>
+          <Button variant='contained' sx={{ ml: 2, width: 'auto' }} onClick={() => router.push(ROUTE_CONFIG.LOGIN)}>
             Sign In
           </Button>
         )}
