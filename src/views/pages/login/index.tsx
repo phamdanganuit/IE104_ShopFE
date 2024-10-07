@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 // ** React
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 
 // ** Mui
 import {
@@ -124,6 +124,7 @@ const LoginPage: NextPage<TProps> = () => {
           }}
         />
       </Box>
+      
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
         <CssBaseline />
         <Box

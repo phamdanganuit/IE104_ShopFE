@@ -12,7 +12,6 @@ import {
   getLocalUserData,
   getTemporaryToken,
   setLocalUserData,
-  setTemporaryToken
 } from 'src/helpers/storage'
 
 // ** Next
@@ -20,8 +19,9 @@ import { NextRouter, useRouter } from 'next/router'
 
 // ** React
 import { FC } from 'react'
+import React from 'react'
 
-// types
+// ** types
 import { UserDataType } from 'src/contexts/types'
 
 // ** hooks
@@ -54,6 +54,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
   instanceAxios.interceptors.request.use(async config => {
     const { accessToken, refreshToken } = getLocalUserData()
     const { temporaryToken } = getTemporaryToken()
+    
     const isPublicApi = config?.params?.isPublic
 
     if (accessToken || temporaryToken) {

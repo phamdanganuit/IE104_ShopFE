@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 // ** React
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import React from 'react'
 
 // ** Mui
 import { Box, Button, CssBaseline, IconButton, InputAdornment, Typography, useTheme } from '@mui/material'
@@ -115,6 +116,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
       }
       dispatch(resetInitialState())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isErrorChangePassword, isSuccessChangePassword, messageChangePassword])
 
   return (

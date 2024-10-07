@@ -11,16 +11,18 @@ import authConfig from 'src/configs/auth'
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 
 // ** Services
-import { loginAuth } from 'src/services/auth'
+import { loginAuth, logoutAuth } from 'src/services/auth'
 
 // ** Config
 import { API_ENDPOINT } from 'src/configs/api'
 
 // ** Helpers
-import { clearLocalUserData } from 'src/helpers/storage'
+import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
 
 // ** instance axios
 import instanceAxios from 'src/helpers/axios'
+import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -43,12 +45,15 @@ const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
   const [loading, setLoading] = useState<boolean>(defaultProvider.loading)
 
+  const { t } = useTranslation()
+
   // ** Hooks
   const router = useRouter()
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
-      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
+      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+
       if (storedToken) {
         setLoading(true)
         await instanceAxios
@@ -62,7 +67,7 @@ const AuthProvider = ({ children }: Props) => {
 
             setUser(null)
             setLoading(false)
-            if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
+            if (!router.pathname.includes('login')) {
               router.replace('/login')
             }
           })
@@ -78,16 +83,17 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
-        params.rememberMe
-          ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.access_token)
-          : null
+        if (params.rememberMe) {
+          setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+        } else {
+          setTemporaryToken(response.data.access_token)
+        }
+
+        toast.success(t('Login_success'))
+
         const returnUrl = router.query.returnUrl
-
         setUser({ ...response.data.user })
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.user)) : null
-
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-
         router.replace(redirectURL as string)
       })
 
@@ -97,10 +103,11 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   const handleLogout = () => {
-    setUser(null)
-    window.localStorage.removeItem('userData')
-    window.localStorage.removeItem(authConfig.storageTokenKeyName)
-    router.push('/login')
+    logoutAuth().then(res => {
+      setUser(null)
+      clearLocalUserData()
+      router.push('/login')
+    })
   }
 
   const values = {

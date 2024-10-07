@@ -3,6 +3,7 @@ import { NextPage } from 'next'
 
 // ** React
 import { useEffect, useState } from 'react'
+import React from 'react'
 
 // ** Mui
 import { Avatar, Box, Button, FormHelperText, Grid, IconButton, InputLabel, useTheme } from '@mui/material'
@@ -346,6 +347,7 @@ const MyProfilePage: NextPage<TProps> = () => {
               </Grid>
             </Box>
           </Grid>
+          
           <Grid container item md={6} xs={12} mt={{ md: 0, xs: 5 }}>
             <Box
               sx={{

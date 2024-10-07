@@ -2,6 +2,7 @@
 import { useRouter } from 'next/router'
 
 // ** React Imports
+import React from 'react'
 import { ReactNode, ReactElement, useEffect } from 'react'
 
 // ** Config
