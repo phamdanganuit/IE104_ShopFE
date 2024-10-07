@@ -3,7 +3,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
-import {Checkbox,Typography, useTheme } from '@mui/material'
+import { Checkbox, Typography, useTheme } from '@mui/material'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 
@@ -57,7 +57,7 @@ const TablePermission = (props: TTablePermission) => {
       const filtered = permissionSelected.filter(item => !allValue.includes(item))
       setPermissionSelected(filtered)
     } else {
-      setPermissionSelected([...new Set([...permissionSelected, ...allValue])])
+      setPermissionSelected(Array.from(new Set([...permissionSelected, ...allValue])))
     }
   }
 
@@ -77,7 +77,7 @@ const TablePermission = (props: TTablePermission) => {
       const filtered = permissionSelected.filter(item => !allValue.includes(item))
       setPermissionSelected(filtered)
     } else {
-      setPermissionSelected([...new Set([...permissionSelected, ...allValue])])
+      setPermissionSelected(Array.from(new Set([...permissionSelected, ...allValue])))
     }
   }
 
