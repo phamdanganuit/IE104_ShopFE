@@ -1,12 +1,13 @@
 export type TParamsGetRoles = {
   limit?: number
-  page?: number,
+  page?: number
   search?: string
   order?: string
 }
 
 export type TParamsCreateRole = {
   name: string
+  permissions?: string[]
 }
 
 export type TParamsEditRole = {
