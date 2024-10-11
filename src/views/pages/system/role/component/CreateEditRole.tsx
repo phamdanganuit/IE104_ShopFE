@@ -20,7 +20,6 @@ import CustomTextField from 'src/components/text-field'
 import { createRole, getDetailsRole } from 'src/services/role'
 
 // ** Redux
-
 import { PERMISSIONS } from 'src/configs/permission'
 import { queryKeys } from 'src/configs/queryKey'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -177,6 +176,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
               <Icon icon='material-symbols-light:close' fontSize={'30px'} />
             </IconButton>
           </Box>
+          
           <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
             <Box
               sx={{

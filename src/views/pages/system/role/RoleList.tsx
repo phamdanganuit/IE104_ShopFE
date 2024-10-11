@@ -22,7 +22,7 @@ import ConfirmationDialog from 'src/components/confirmation-dialog'
 import Icon from 'src/components/Icon'
 
 // ** Services
-import { deleteRole, getAllRoles, getDetailsRole, updateRole } from 'src/services/role'
+import { deleteRole, getDetailsRole } from 'src/services/role'
 
 // ** Others
 import toast from 'react-hot-toast'
@@ -32,16 +32,14 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Hooks
 import { usePermission } from 'src/hooks/usePermission'
-import { useMutation, useMutationState, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from 'src/configs/queryKey'
-import { TParamsEditRole } from 'src/types/role'
 import { useGetListRoles, useMutationEditRole } from 'src/queries/role'
 
 type TProps = {}
 
 const RoleListPage: NextPage<TProps> = () => {
-  // State
-
+  // ** State
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     id: ''
@@ -75,8 +73,7 @@ const RoleListPage: NextPage<TProps> = () => {
   // ** theme
   const theme = useTheme()
 
-  // fetch api
-
+  // ** fetch api
   const fetchDeleteRole = async (id: string) => {
     const res = await deleteRole(id)
 
@@ -120,7 +117,7 @@ const RoleListPage: NextPage<TProps> = () => {
     }
   })
 
-  // handle
+  // ** handle
   const handleCloseConfirmDeleteRole = useCallback(() => {
     setOpenDeleteRole({
       open: false,

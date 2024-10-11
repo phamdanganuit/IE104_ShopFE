@@ -94,6 +94,7 @@ const TablePermission = (props: TTablePermission) => {
 
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
+
         const { isChecked, allValue } = handleIsChecked(row.value, row.parentValue)
 
         return (

@@ -1,16 +1,18 @@
 // ** Import Next
 import { NextPage } from 'next'
 
-// ** Config
+// ** Configs
 import { PERMISSIONS } from 'src/configs/permission'
 
 // ** views
+// import ReviewListPage from 'src/views/pages/manage-order/reviews/ReviewList'
+
 
 type TProps = {}
 
 const Index: NextPage<TProps> = () => {
-  return <h1>User</h1>
+  // return <ReviewListPage />
+  return <h1>Order</h1>
 }
 
-Index.permission = [PERMISSIONS.SYSTEM.USER.VIEW]
 export default Index

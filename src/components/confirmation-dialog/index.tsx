@@ -55,6 +55,7 @@ const ConfirmationDialog = (props: TConfirmationDialog) => {
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Icon icon='ep:warning' fontSize={80} color={theme.palette.warning.main} />
       </Box>
+
       <DialogTitle sx={{ textAlign: 'center' }}>
         <Typography variant='h4' sx={{ fontWeight: 600 }}>
           {title}
@@ -64,6 +65,7 @@ const ConfirmationDialog = (props: TConfirmationDialog) => {
       <CustomStyleContent>
         <DialogContentText sx={{ textAlign: 'center', marginBottom: '20px' }}>{description}</DialogContentText>
       </CustomStyleContent>
+      
       <DialogActions>
         <Button color='error' variant='outlined' onClick={handleCancel}>
           {t('Cancel')}

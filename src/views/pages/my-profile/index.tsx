@@ -27,8 +27,8 @@ import { useTranslation } from 'react-i18next'
 
 // ** services
 import { getAuthMe } from 'src/services/auth'
+import { getAllRoles } from 'src/services/role'
 
-// import { getAllRoles } from 'src/services/role'
 // import { getAllCities } from 'src/services/city'
 
 // ** Utils
@@ -134,20 +134,20 @@ const MyProfilePage: NextPage<TProps> = () => {
       })
   }
 
-  // const fetchAllRoles = async () => {
-  //   setLoading(true)
-  //   await getAllRoles({ params: { limit: -1, page: -1 } })
-  //     .then(res => {
-  //       const data = res?.data.roles
-  //       if (data) {
-  //         setOptionRoles(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
-  //       }
-  //       setLoading(false)
-  //     })
-  //     .catch(e => {
-  //       setLoading(false)
-  //     })
-  // }
+  const fetchAllRoles = async () => {
+    setLoading(true)
+    await getAllRoles({ params: { limit: -1, page: -1 } })
+      .then(res => {
+        const data = res?.data.roles
+        if (data) {
+          setOptionRoles(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
 
   // const fetchAllCities = async () => {
   //   setLoading(true)
@@ -180,10 +180,11 @@ const MyProfilePage: NextPage<TProps> = () => {
     }
   }, [isErrorUpdateMe, isSuccessUpdateMe, messageUpdateMe])
 
-  // useEffect(() => {
-  //   fetchAllRoles()
-  //   fetchAllCities()
-  // }, [])
+  useEffect(() => {
+    fetchAllRoles()
+    
+    // fetchAllCities()
+  }, [])
 
   const onSubmit = (data: any) => {
     const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
