@@ -37,7 +37,7 @@ import { getAllCities } from 'src/services/city'
 
 // ** Redux
 import { AppDispatch } from 'src/stores'
-import { createUserAsync, updateUserAsync } from 'src/stores/user/actiions'
+import { createUserAsync, updateUserAsync } from 'src/stores/user/actions'
 import { useDispatch } from 'react-redux'
 import { getAllRoles } from 'src/services/role'
 
