@@ -23,5 +23,8 @@ export const API_ENDPOINT = {
     PAYMENT_TYPE: {
       INDEX: `${BASE_URL}/payment-type`
     }
+  },
+  REPORT: {
+    INDEX: `${BASE_URL}/report`
   }
 }
