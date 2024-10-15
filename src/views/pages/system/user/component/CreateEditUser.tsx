@@ -63,7 +63,7 @@ type TDefaultValue = {
 }
 
 const CreateEditUser = (props: TCreateEditUser) => {
-  // State
+  // ** State
   const [loading, setLoading] = useState(false)
   const [avatar, setAvatar] = useState('')
   const [optionRoles, setOptionRoles] = useState<{ label: string; value: string }[]>([])
@@ -73,7 +73,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
   // ** Props
   const { open, onClose, idUser } = props
 
-  // Hooks
+  // ** Hooks
   const theme = useTheme()
   const { t, i18n } = useTranslation()
 
