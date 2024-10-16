@@ -263,6 +263,7 @@ const UserListPage: NextPage<TProps> = () => {
       maxWidth: 200,
       renderCell: params => {
         const { row } = params
+        console.log('🚀 ~ row:', row)
 
         return <Typography>{row?.city?.name}</Typography>
       }
@@ -391,6 +392,7 @@ const UserListPage: NextPage<TProps> = () => {
         }
         setLoading(false)
       })
+
       .catch(e => {
         setLoading(false)
       })

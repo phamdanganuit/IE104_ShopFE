@@ -3,8 +3,6 @@ import { TextField, TextFieldProps, styled } from '@mui/material'
 import React from 'react'
 
 const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
-  console.log(theme)
-
   return {
     '& .MuiInputLabel-root': {
       transform: 'none',
