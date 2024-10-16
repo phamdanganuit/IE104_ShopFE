@@ -105,3 +105,22 @@ export const stringToSlug = (str: string) => {
 
   return str
 }
+
+export const formatNumberToLocal = (value: string | number) => {
+  try {
+    return Number(value).toLocaleString('vi-VN', {
+      minimumFractionDigits: 0
+    })
+  } catch (error) {
+    return value
+  }
+}
+
+export const convertHTMLToDraft = (html: string) => {
+  const blocksFromHtml = htmlToDraft(html)
+  const { contentBlocks, entityMap } = blocksFromHtml
+  const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+  const editorState = EditorState.createWithContent(contentState)
+
+  return editorState
+}
