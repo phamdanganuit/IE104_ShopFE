@@ -35,6 +35,14 @@ export const API_ENDPOINT = {
       INDEX: `${BASE_URL}/comments`
     }
   },
+  MANAGE_ORDER: {
+    ORDER: {
+      INDEX: `${BASE_URL}/orders`
+    },
+    REVIEW: {
+      INDEX: `${BASE_URL}/reviews`
+    }
+  },
   REPORT: {
     INDEX: `${BASE_URL}/report`
   }
