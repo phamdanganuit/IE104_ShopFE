@@ -1,5 +1,5 @@
 // ** Types
-// import { TItemOrderProduct } from 'src/types/order-product'
+import { TItemOrderProduct } from 'src/types/order-product'
 
 // ** Libraries
 import { ContentState, EditorState } from 'draft-js'
@@ -123,4 +123,42 @@ export const convertHTMLToDraft = (html: string) => {
   const editorState = EditorState.createWithContent(contentState)
 
   return editorState
+}
+
+export const cloneDeep = (data: any) => {
+  try {
+    return JSON.parse(JSON.stringify(data))
+  } catch (error) {
+    return data
+  }
+}
+
+export const convertUpdateProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
+  try {
+    let result = []
+    const cloneOrderItems = cloneDeep(orderItems)
+    const findItems = cloneOrderItems.find((item: TItemOrderProduct) => item.product === addItem.product)
+    if (findItems) {
+      findItems.amount += addItem.amount
+    } else {
+      cloneOrderItems.push(addItem)
+    }
+    result = cloneOrderItems.filter((item: TItemOrderProduct) => item.amount)
+
+    return result
+  } catch (error) {
+    return orderItems
+  }
+}
+
+export const isExpiry = (startDate: Date | null, endDate: Date | null) => {
+  if (startDate && endDate) {
+    const currentTime = new Date().getTime()
+    const startDateTime = new Date(startDate).getTime()
+    const endDateTime = new Date(endDate).getTime()
+
+    return startDateTime <= currentTime && endDateTime > currentTime
+  }
+
+  return false
 }
