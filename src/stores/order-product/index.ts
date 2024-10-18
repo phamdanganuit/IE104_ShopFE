@@ -1,6 +1,5 @@
 // ** Redux Imports
 import { createSlice } from '@reduxjs/toolkit'
-import { getAllOrderProducts } from 'src/services/order-product'
 
 // ** Actions
 import {

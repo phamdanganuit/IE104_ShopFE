@@ -565,7 +565,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                 }}
                 marginTop={{ md: 5, xs: 0 }}
               >
-                Revieew
+                Review
               </Box>
             </Grid>
           </Grid>
