@@ -10,8 +10,6 @@ import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
 import MenuItem, { MenuItemProps } from '@mui/material/MenuItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { Badge, Button, Typography, styled, useTheme } from '@mui/material'
@@ -49,7 +47,7 @@ const StyleMenuItem = styled(MenuItem)<MenuItemProps>(({ theme }) => ({}))
 
 const CartProduct = (props: TProps) => {
   // ** Translation
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
@@ -64,7 +62,7 @@ const CartProduct = (props: TProps) => {
 
   const open = Boolean(anchorEl)
 
-  // && Handle
+  // ** Handle
   const handleNavigateDetailsProduct = (slug: string) => {
     router.push(`${ROUTE_CONFIG.PRODUCT}/${slug}`)
   }
@@ -193,6 +191,7 @@ const CartProduct = (props: TProps) => {
                             VND
                           </Typography>
                         </Box>
+
                         <Typography>
                           x <b>{item.amount}</b>
                         </Typography>
@@ -202,6 +201,7 @@ const CartProduct = (props: TProps) => {
                 )
               })}
             </Box>
+            
             <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
               <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2, mr: 2 }} onClick={handleNavigateMyCart}>
                 {t('View_cart')}
