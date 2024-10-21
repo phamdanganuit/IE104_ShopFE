@@ -455,6 +455,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
             </Grid>
           </Box>
         </Grid>
+
         <Grid container md={12} xs={12} mt={6}>
           <Grid container>
             <Grid
@@ -500,6 +501,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                 />
               </Box>
             </Grid>
+            
             <Grid container item md={3} xs={12} mt={{ md: 0, xs: 5 }}>
               <Box
                 sx={{

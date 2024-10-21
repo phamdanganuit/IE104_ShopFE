@@ -10,7 +10,6 @@ import { Avatar, Box, Button, Checkbox, Divider, IconButton, Tooltip, Typography
 // ** Components
 import CustomTextField from 'src/components/text-field'
 import Icon from 'src/components/Icon'
-import CustomSelect from 'src/components/custom-select'
 
 // ** Translate
 import { t } from 'i18next'
@@ -37,15 +36,6 @@ import { useRouter } from 'next/router'
 import { ROUTE_CONFIG } from 'src/configs/route'
 
 type TProps = {}
-
-type TDefaultValue = {
-  email: string
-  address: string
-  city: string
-  phoneNumber: string
-  role: string
-  fullName: string
-}
 
 const MyCartPage: NextPage<TProps> = () => {
   // State
@@ -351,6 +341,7 @@ const MyCartPage: NextPage<TProps> = () => {
                           <Icon icon='ic:round-plus' />
                         </IconButton>
                       </Box>
+
                       <Box sx={{ flexBasis: '5%', mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
                         <IconButton onClick={() => handleDeleteProductCart(item.product)}>
                           <Icon icon='mdi:delete-outline' />
