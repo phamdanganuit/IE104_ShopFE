@@ -168,6 +168,7 @@ const MyProductPage: NextPage<TProps> = () => {
               return <Tab key={opt.value} value={opt.value} label={opt.label} />
             })}
           </StyledTabs>
+
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, width: '100%' }}>
             <Box sx={{ width: '300px' }}>
               <InputSearch
@@ -177,6 +178,7 @@ const MyProductPage: NextPage<TProps> = () => {
               />
             </Box>
           </Box>
+
           {tabActive === TYPE_VALUE.liked && (
             <Box sx={{ height: '100%', width: '100%', mt: 6 }}>
               <Grid container md={12} xs={12} spacing={6}>
@@ -198,6 +200,7 @@ const MyProductPage: NextPage<TProps> = () => {
               </Grid>
             </Box>
           )}
+          
           {tabActive === TYPE_VALUE.viewed && (
             <Box sx={{ height: '100%', width: '100%', mt: 6 }}>
               <Grid container md={12} xs={12} spacing={6}>
@@ -220,6 +223,7 @@ const MyProductPage: NextPage<TProps> = () => {
             </Box>
           )}
         </Grid>
+
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mt: 6 }}>
           <CustomPagination
             onChangePagination={handleOnchangePagination}

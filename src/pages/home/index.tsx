@@ -41,7 +41,7 @@ export default function Home(props: TProps) {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <meta name='keywords' content='ReactJS, NextJS 14, Typescript, Lập trình thật dễ' />
       </Head>
-      <HomePage products={products} totalCount={totalCount} paramsServer={params} productTypesServer={productTypes} />
+      <HomePage />
     </>
   )
 }
