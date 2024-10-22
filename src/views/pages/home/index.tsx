@@ -82,7 +82,6 @@ const HomePage: NextPage<TProps> = () => {
     isSuccessUnLike,
     messageErrorLike,
     messageErrorUnLike,
-    isLoading
   } = useSelector((state: RootState) => state.product)
   const dispatch: AppDispatch = useDispatch()
 
