@@ -77,7 +77,7 @@ const MyCartPage: NextPage<TProps> = () => {
 
     return total
   }, [memoItemsSelectedProduct])
-
+  
   useEffect(() => {
     const productSelected = router.query.selected as string
     if (productSelected) {
@@ -366,7 +366,7 @@ const MyCartPage: NextPage<TProps> = () => {
           </Typography>
         </Box>
       </Box>
-      
+
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
         <Button
           disabled={!selectedRows.length}

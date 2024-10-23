@@ -39,6 +39,7 @@ import LoginLight from '/public/images/login-light.png'
 import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 type TProps = {}
 
@@ -124,7 +125,7 @@ const LoginPage: NextPage<TProps> = () => {
           }}
         />
       </Box>
-      
+
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
         <CssBaseline />
         <Box
@@ -222,7 +223,7 @@ const LoginPage: NextPage<TProps> = () => {
                 style={{
                   color: theme.palette.primary.main
                 }}
-                href='/register'
+                href={`${ROUTE_CONFIG.REGISTER}`}
               >
                 {t('Register')}
               </Link>
