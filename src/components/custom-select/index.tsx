@@ -1,7 +1,7 @@
 import { Box, InputLabel, InputLabelProps, MenuItem, MenuItemProps, Select, SelectProps, styled } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
-interface TCustomSelect extends SelectProps {
+interface TCustomSelect extends Omit<SelectProps, 'options'> {
   options: { label: string; value: string }[]
 }
 
@@ -9,7 +9,8 @@ const StyledSelect = styled(Select)<SelectProps>(({ theme }) => ({
   '& .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input': {
     padding: '8px 8px 8px 8px !important',
     height: '38px',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    backgroundColor: theme.palette.background.paper
   },
   legend: {
     display: 'none'

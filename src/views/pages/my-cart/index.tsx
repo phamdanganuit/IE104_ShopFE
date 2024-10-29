@@ -77,7 +77,7 @@ const MyCartPage: NextPage<TProps> = () => {
 
     return total
   }, [memoItemsSelectedProduct])
-  
+
   useEffect(() => {
     const productSelected = router.query.selected as string
     if (productSelected) {
@@ -161,6 +161,7 @@ const MyCartPage: NextPage<TProps> = () => {
     const formatData = JSON.stringify(
       memoItemsSelectedProduct.map(item => ({ product: item.product, amount: item.amount }))
     )
+
     router.push({
       pathname: ROUTE_CONFIG.CHECKOUT_PRODUCT,
       query: {

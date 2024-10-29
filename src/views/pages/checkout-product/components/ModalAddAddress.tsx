@@ -1,5 +1,5 @@
 // ** React
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Form
@@ -65,7 +65,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
   // State
   const [loading, setLoading] = useState(false)
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
-  const [activeTab, setActiveTab] = useState(1)
+  const [activeTab, setActiveTab] = useState(1) // 1: change address, 2: add new address
   const [addresses, setAddresses] = useState<TUserAddresses[]>([])
   const [isEdit, setIsEdit] = useState({
     isEdit: false,
@@ -104,10 +104,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
     handleSubmit,
     control,
     formState: { errors },
-    reset,
-    getValues,
-    setError,
-    clearErrors
+    reset
   } = useForm({
     defaultValues,
     mode: 'onBlur',
@@ -115,6 +112,15 @@ const ModalAddAddress = (props: TModalAddAddress) => {
   })
 
   // handle
+  const handleUpdateAddress = () => {
+    dispatch(
+      updateAuthMeAsync({
+        ...user,
+        addresses: addresses
+      })
+    )
+  }
+
   const onSubmit = (data: any) => {
     if (!Object.keys(errors).length) {
       if (activeTab === 2) {
@@ -168,7 +174,6 @@ const ModalAddAddress = (props: TModalAddAddress) => {
   }
 
   // fetch api
-
   const fetchAllCities = async () => {
     setLoading(true)
     await getAllCities({ params: { limit: -1, page: -1 } })
@@ -182,15 +187,6 @@ const ModalAddAddress = (props: TModalAddAddress) => {
       .catch(e => {
         setLoading(false)
       })
-  }
-
-  const handleUpdateAddress = () => {
-    dispatch(
-      updateAuthMeAsync({
-        ...user,
-        addresses: addresses
-      })
-    )
   }
 
   useEffect(() => {

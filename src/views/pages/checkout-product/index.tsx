@@ -84,6 +84,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
 
   const handleFormatDataProduct = (items: any) => {
     const objectMap: Record<string, TItemOrderProduct> = {}
+
     orderItems.forEach((order: any) => {
       objectMap[order.product] = order
     })
@@ -125,7 +126,6 @@ const CheckoutProductPage: NextPage<TProps> = () => {
 
   const memoNameCity = useMemo(() => {
     const findCity = optionCities.find(item => item.value === memoAddressDefault?.city)
-    console.log(findCity)
 
     return findCity?.label
   }, [memoAddressDefault, optionCities])
@@ -237,10 +237,14 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   const handleChangeAmountCart = (items: TItemOrderProduct[]) => {
     const productCart = getLocalProductCart()
     const parseData = productCart ? JSON.parse(productCart) : {}
+
     const objectMap: Record<string, number> = {}
     items.forEach((item: any) => {
       objectMap[item.product] = -item.amount
     })
+    console.log('objectMap', objectMap);
+    
+
     const listOrderItems: TItemOrderProduct[] = []
     orderItems.forEach((order: TItemOrderProduct) => {
       if (objectMap[order.product]) {
@@ -252,6 +256,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
         listOrderItems.push(order)
       }
     })
+
     const filterListOrder = listOrderItems.filter((item: TItemOrderProduct) => item.amount)
     if (user) {
       dispatch(
@@ -353,6 +358,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
           </Box>
         </Box>
       </Box>
+
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -472,6 +478,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
           </Box>
         )}
       </Box>
+
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -550,6 +557,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
           </Box>
         </Box>
       </Box>
+
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
         <Button
           onClick={handleOrderProduct}
