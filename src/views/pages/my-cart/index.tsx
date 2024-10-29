@@ -70,9 +70,9 @@ const MyCartPage: NextPage<TProps> = () => {
 
   const memoTotalSelectedProduct = useMemo(() => {
     const total = memoItemsSelectedProduct?.reduce((result, current: TItemOrderProduct) => {
-      const currentPrice = current.discount > 0 ? (current.price * (100 - current.discount)) / 100 : current.price
+      const currentPrice = current?.discount > 0 ? (current?.price * (100 - current?.discount)) / 100 : current?.price
 
-      return result + currentPrice * current.amount
+      return result + currentPrice * current?.amount
     }, 0)
 
     return total

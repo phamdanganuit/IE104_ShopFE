@@ -9,6 +9,7 @@ export const ROUTE_CONFIG = {
   REGISTER: '/register',
   MY_CART: '/my-cart',
   MY_PRODUCT: '/my-product',
+  MY_ORDER: "/my-order",
   CHECKOUT_PRODUCT: '/checkout-product',
   SYSTEM: {
     ROLE: '/system/role',
