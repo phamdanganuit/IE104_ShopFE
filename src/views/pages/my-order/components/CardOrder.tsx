@@ -16,7 +16,7 @@ import Icon from 'src/components/Icon'
 import { t } from 'i18next'
 
 // ** Utils
-import { convertUpdateMultipleProductsCart, convertUpdateProductToCart, formatNumberToLocal, isExpiry } from 'src/utils'
+import { convertUpdateMultipleProductsCart, formatNumberToLocal,  } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
