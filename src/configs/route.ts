@@ -9,7 +9,7 @@ export const ROUTE_CONFIG = {
   REGISTER: '/register',
   MY_CART: '/my-cart',
   MY_PRODUCT: '/my-product',
-  MY_ORDER: "/my-order",
+  MY_ORDER: '/my-order',
   CHECKOUT_PRODUCT: '/checkout-product',
   SYSTEM: {
     ROLE: '/system/role',
@@ -20,8 +20,8 @@ export const ROUTE_CONFIG = {
     MANAGE_TYPE_PRODUCT: '/manage-product/product-type'
   },
   MANAGE_ORDER: {
-    ORDER: '/manage-product/order',
-    MANAGE_REVIEW: '/manage-product/review'
+    ORDER: '/manage-order/order',
+    MANAGE_REVIEW: '/manage-order/review'
   },
   SETTINGS: {
     CITY: '/settings/city',

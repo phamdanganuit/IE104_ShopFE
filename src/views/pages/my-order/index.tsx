@@ -89,7 +89,6 @@ const MyOrderPage: NextPage<TProps> = () => {
   const { ordersOfMe, isLoading, isErrorCancelMe, isSuccessCancelMe, messageErrorCancelMe } = useSelector(
     (state: RootState) => state.orderProduct
   )
-  console.log('🚀 ~ ordersOfMe:', ordersOfMe)
 
   // ** fetch API
   const handleGetListOrdersOfMe = () => {

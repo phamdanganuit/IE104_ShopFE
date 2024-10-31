@@ -63,7 +63,7 @@ export const cancelOrderProductOfMe = async (id: string) => {
   }
 }
 
-// admin cms
+// ** admin cms
 export const deleteOrderProduct = async (id: string) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/${id}`)

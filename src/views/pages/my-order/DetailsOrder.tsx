@@ -85,14 +85,8 @@ const MyOrderPage: NextPage<TProps> = () => {
   // } = useSelector((state: RootState) => state.reviews)
 
   // ** fetch API
-
   const handleConfirmCancel = () => {
     dispatch(cancelOrderProductOfMeAsync(dataOrder._id))
-  }
-
-  // ** handle
-  const handleCloseDialog = () => {
-    setOpenCancel(false)
   }
 
   const handleGetDetailsOrdersOfMe = async () => {
@@ -101,6 +95,11 @@ const MyOrderPage: NextPage<TProps> = () => {
       setDataOrder(res?.data)
       setIsLoading(false)
     })
+  }
+
+  // ** handle
+  const handleCloseDialog = () => {
+    setOpenCancel(false)
   }
 
   useEffect(() => {
@@ -227,6 +226,7 @@ const MyOrderPage: NextPage<TProps> = () => {
         title={t('Title_cancel_order')}
         description={t('Confirm_cancel_order')}
       />
+
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -254,7 +254,9 @@ const MyOrderPage: NextPage<TProps> = () => {
             </Typography>
           </Box>
         </Box>
+
         <Divider />
+
         <Box mt={2} mb={2} sx={{ display: 'flex', flexDirection: 'column', gap: 4, cursor: 'pointer' }}>
           {dataOrder?.orderItems?.map((item: TItemProductMe) => {
             return (
@@ -356,7 +358,9 @@ const MyOrderPage: NextPage<TProps> = () => {
             )
           })}
         </Box>
+
         <Divider />
+
         <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
@@ -378,20 +382,23 @@ const MyOrderPage: NextPage<TProps> = () => {
               </Typography>
             </Box>
           </Box>
+
           <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '2px', mt: 4 }}>
               <Typography sx={{ fontSize: '18px', fontWeight: 600 }}>{t('Item_price')}:</Typography>
-              <Typography sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main }}>
+              <Typography
+                sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main, textAlign: 'right' }}
+              >
                 {formatNumberToLocal(dataOrder?.itemsPrice)} VND
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '2px', mt: 4 }}>
               <Typography sx={{ fontSize: '18px', fontWeight: 600 }}>{t('Shipping_price')}:</Typography>
               <Typography sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main }}>
                 {formatNumberToLocal(dataOrder?.shippingPrice)} VND
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px', mt: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '2px', mt: 4 }}>
               <Typography sx={{ fontSize: '18px', fontWeight: 600 }}>{t('Sum_money')}:</Typography>
               <Typography sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.primary.main }}>
                 {formatNumberToLocal(dataOrder?.totalPrice)} VND
@@ -400,7 +407,7 @@ const MyOrderPage: NextPage<TProps> = () => {
           </Box>
         </Box>
 
-        <Box mt={2} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box mt={3} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Icon icon='carbon:delivery'></Icon>
             <Typography>
