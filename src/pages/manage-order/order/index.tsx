@@ -5,13 +5,12 @@ import { NextPage } from 'next'
 import { PERMISSIONS } from 'src/configs/permission'
 
 // ** views
-// import OrderProductListPage from 'src/views/pages/manage-order/order-product/OrderProductList'
+import OrderProductListPage from 'src/views/pages/manage-order/order-product/OrderProductList'
 
 type TProps = {}
 
 const Index: NextPage<TProps> = () => {
-  // return <OrderProductListPage />
-  return <h1>Order</h1>
+  return <OrderProductListPage />
 }
 
 Index.permission = [PERMISSIONS.MANAGE_ORDER.ORDER.VIEW]
