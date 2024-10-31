@@ -194,7 +194,9 @@ const CardOrder: NextPage<TProps> = props => {
             {t(`${(STATUS_ORDER_PRODUCT as any)[dataOrder.status].label}`)}
           </Typography>
         </Box>
+
         <Divider />
+        
         <Box
           mt={2}
           mb={2}

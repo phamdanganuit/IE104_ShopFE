@@ -2,7 +2,6 @@
 import React, { useEffect, useMemo } from 'react'
 
 // ** Next
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 // ** Mui Imports
@@ -38,7 +37,7 @@ import { updateProductToCart } from 'src/stores/order-product'
 import { TItemOrderProduct } from 'src/types/order-product'
 
 // ** Utils
-import { formatNumberToLocal, isExpiry } from 'src/utils'
+import { formatNumberToLocal } from 'src/utils'
 import NoData from 'src/components/no-data'
 
 type TProps = {}
@@ -62,7 +61,7 @@ const CartProduct = (props: TProps) => {
 
   const open = Boolean(anchorEl)
 
-  // ** Handle
+  // && Handle
   const handleNavigateDetailsProduct = (slug: string) => {
     router.push(`${ROUTE_CONFIG.PRODUCT}/${slug}`)
   }
@@ -156,7 +155,7 @@ const CartProduct = (props: TProps) => {
                 return (
                   <StyleMenuItem key={item.product} onClick={() => handleNavigateDetailsProduct(item.slug)}>
                     <Avatar src={item.image} sx={{ height: '60px !important', width: '60px !important' }} />
-                    <Box style={{ flex: 1 }}>
+                    <Box style={{flex: 1}}>
                       <Typography sx={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {item.name}
                       </Typography>
@@ -191,17 +190,13 @@ const CartProduct = (props: TProps) => {
                             VND
                           </Typography>
                         </Box>
-
-                        <Typography>
-                          x <b>{item.amount}</b>
-                        </Typography>
+                        <Typography>x <b>{item.amount}</b></Typography>
                       </Box>
                     </Box>
                   </StyleMenuItem>
                 )
               })}
             </Box>
-            
             <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
               <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2, mr: 2 }} onClick={handleNavigateMyCart}>
                 {t('View_cart')}
