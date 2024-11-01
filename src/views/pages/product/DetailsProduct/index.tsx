@@ -555,6 +555,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                 </Box>
               </Box>
             </Grid>
+            
             <Grid container item md={8} xs={12}>
               <Box
                 sx={{
