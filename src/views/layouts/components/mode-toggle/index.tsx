@@ -31,7 +31,7 @@ const ModeToggle = (props: TProps) => {
   }
 
   return (
-    <IconButton color='inherit' onClick={handleToggleMode}>
+    <IconButton color='secondary' onClick={handleToggleMode}>
       <Icon icon={settings.mode === 'light' ? 'material-symbols:dark-mode-outline' : 'iconamoon:mode-light'} />
     </IconButton>
   )

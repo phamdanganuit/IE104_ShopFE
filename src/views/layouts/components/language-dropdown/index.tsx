@@ -42,7 +42,7 @@ const LanguageDropdown = (props: TProps) => {
 
   return (
     <>
-      <IconButton color='inherit' id='language-dropdown' onClick={handleOpen}>
+      <IconButton color='secondary' id='language-dropdown' onClick={handleOpen}>
         <Icon icon='material-symbols-light:translate' />
       </IconButton>
       <Menu

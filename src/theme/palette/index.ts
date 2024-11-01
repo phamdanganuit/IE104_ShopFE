@@ -1,12 +1,16 @@
 // ** Type Imports
+import { useTheme } from '@mui/material'
 import { Palette } from '@mui/material'
 import { Skin } from 'src/types/layouts'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 const DefaultPalette = (mode: Palette['mode'], skin: Skin): Palette => {
+  const theme = useTheme()
+
   // ** Vars
   const whiteColor = '#FFF'
-  const lightColor = 'rgb(47, 43, 61)' // Màu xám đậm
-  const darkColor = 'rgb(208, 212, 241)'
+  const lightColor = 'rgba(255, 255, 255, 0.8)'
+  const darkColor = hexToRGBA(theme.palette.primary.main, 0.7)
   const darkPaperBgColor = '#2F3349'
   const mainColor = mode === 'light' ? lightColor : darkColor
 
@@ -29,7 +33,7 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin): Palette => {
       darkPaperBg: darkPaperBgColor,
       bodyBg: mode === 'light' ? '#F8F7FA' : '#25293C', // Same as palette.background.default but doesn't consider bordered skin
       trackBg: mode === 'light' ? '#F1F0F2' : '#363B54',
-      avatarBg: mode === 'light' ? '#DBDADE' : '#4A5072',
+      avatarBg: mode === 'light' ? '#dcdcdc' : '#4A5072',
       tableHeaderBg: mode === 'light' ? '#F6F6F7' : '#4A5072',
       borderColor: `rgba(${mainColor}, 0.16)`
     },

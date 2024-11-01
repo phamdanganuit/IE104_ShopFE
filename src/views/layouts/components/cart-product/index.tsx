@@ -102,7 +102,7 @@ const CartProduct = (props: TProps) => {
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <Tooltip title={t('My_cart')}>
-          <IconButton onClick={handleClick} color='inherit'>
+          <IconButton onClick={handleClick} color='secondary'>
             {!!orderItems.length ? (
               <Badge color='primary' badgeContent={totalItemsCart}>
                 <Icon icon='flowbite:cart-outline' />

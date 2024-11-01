@@ -116,7 +116,6 @@ const OrderProductListPage: NextPage<TProps> = () => {
   } = useSelector((state: RootState) => state.orderProduct)
   console.log('🚀 ~ orderProducts:', orderProducts)
 
-  
   // ** theme
   const theme = useTheme()
 
@@ -318,6 +317,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
       align: 'left',
       renderCell: params => {
         const { row } = params
+        console.log('🚀 ~ row:', row)
 
         return (
           <>
@@ -482,6 +482,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
       />
 
       <EditOrderProduct open={openEdit.open} onClose={handleCloseEdit} idOrder={openEdit.id} />
+
       {isLoading && <Spinner />}
       <Box sx={{ backgroundColor: 'inherit', width: '100%', mb: 4 }}>
         <Grid container spacing={6} sx={{ height: '100%' }}>

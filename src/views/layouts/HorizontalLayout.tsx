@@ -21,7 +21,7 @@ import CartProduct from 'src/views/layouts/components/cart-product'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
-import { Button } from '@mui/material'
+import { Button, useTheme } from '@mui/material'
 import { useRouter } from 'next/router'
 
 // config
@@ -61,6 +61,9 @@ const AppBar = styled(MuiAppBar, {
 }))
 
 const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) => {
+  // ** theme
+  const theme = useTheme()
+
   const { user } = useAuth()
   const router = useRouter()
 
@@ -98,7 +101,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
           </IconButton>
         )}
         <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
-          <Link style={{ color: 'inherit' }} href={ROUTE_CONFIG.HOME}>
+          <Link style={{ color: theme.palette.primary.main }} href={ROUTE_CONFIG.HOME}>
             Dashboard
           </Link>
         </Typography>

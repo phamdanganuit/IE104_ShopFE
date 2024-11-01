@@ -233,7 +233,7 @@ const UserDropdown = (props: TProps) => {
         </MenuItem>
         <MenuItem onClick={handleNavigateMyProduct}>
           <Avatar>
-            <Icon icon='tabler:brand-producthunt' />
+            <Icon icon='tabler:brand-producthunt'/>
           </Avatar>{' '}
           {t('My_product')}
         </MenuItem>
@@ -244,13 +244,13 @@ const UserDropdown = (props: TProps) => {
           {t('My_order')}
         </MenuItem>
         <MenuItem onClick={handleNavigateChangePassword}>
-          <Avatar sx={{ backgroundColor: 'transparent' }}>
-            <Icon icon='arcticons:password' />
+          <Avatar>
+            <Icon icon='arcticons:password'/>
           </Avatar>
           {t('Change_password')}
         </MenuItem>
         <MenuItem onClick={logout}>
-          <Avatar sx={{ backgroundColor: 'transparent' }}>
+          <Avatar >
             <Icon icon='material-symbols-light:logout' />
           </Avatar>
           {t('Logout')}
