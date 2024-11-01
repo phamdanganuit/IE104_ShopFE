@@ -5,14 +5,13 @@ import { NextPage } from 'next'
 import { PERMISSIONS } from 'src/configs/permission'
 
 // ** views
-// import ReviewListPage from 'src/views/pages/manage-order/reviews/ReviewList'
+import ReviewListPage from 'src/views/pages/manage-order/reviews/ReviewList'
 
 
 type TProps = {}
 
 const Index: NextPage<TProps> = () => {
-  // return <ReviewListPage />
-  return <h1>Order</h1>
+  return <ReviewListPage />
 }
 
 export default Index
