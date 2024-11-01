@@ -15,13 +15,14 @@ import Icon from 'src/components/Icon'
 import Spinner from 'src/components/spinner'
 import CardRelatedProduct from 'src/views/pages/product/components/CardRelatedProduct'
 import NoData from 'src/components/no-data'
+import CustomCarousel from 'src/components/custom-carousel'
 
 // ** Translate
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
 
 // ** Utils
-import { convertUpdateProductToCart, formatNumberToLocal, isExpiry } from 'src/utils'
+import { convertUpdateProductToCart, formatFilter, formatNumberToLocal, isExpiry } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
@@ -43,6 +44,9 @@ import { TProduct } from 'src/types/product'
 
 // ** Configs
 import { ROUTE_CONFIG } from 'src/configs/route'
+import { getAllReviews } from 'src/services/reviewProduct'
+import { TReviewItem } from 'src/types/reviews'
+import CardReview from 'src/views/pages/product/components/CardReview'
 
 type TProps = {}
 
@@ -51,6 +55,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [dataProduct, setDataProduct] = useState<TProduct | any>({})
   const [listRelatedProduct, setRelatedProduct] = useState<TProduct[]>([])
+  const [listReviews, setListReview] = useState<TReviewItem[]>([])
 
   const [amountProduct, setAmountProduct] = useState(1)
 
@@ -68,6 +73,29 @@ const DetailsProductPage: NextPage<TProps> = () => {
   const dispatch: AppDispatch = useDispatch()
 
   // fetch api
+  const fetchGetAllListReviewByProduct = async (id: string) => {
+    setLoading(true)
+    await getAllReviews({
+      params: {
+        limit: -1,
+        page: -1,
+        order: 'createdAt desc',
+        isPublic: true,
+        ...formatFilter({ productId: id })
+      }
+    })
+      .then(async response => {
+        setLoading(false)
+        const data = response?.data?.reviews
+        if (data) {
+          setListReview(data)
+        }
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
   const fetchGetDetailsProduct = async (slug: string) => {
     setLoading(true)
     await getDetailsProductPublicBySlug(slug, true)
@@ -141,6 +169,14 @@ const DetailsProductPage: NextPage<TProps> = () => {
       ROUTE_CONFIG.MY_CART
     )
   }
+
+  useEffect(() => {
+    if (dataProduct._id) {
+      // fetchListCommentProduct(dataProduct._id)
+      
+      fetchGetAllListReviewByProduct(dataProduct._id)
+    }
+  }, [dataProduct._id])
 
   useEffect(() => {
     if (productId) {
@@ -500,8 +536,58 @@ const DetailsProductPage: NextPage<TProps> = () => {
                   dangerouslySetInnerHTML={{ __html: dataProduct.description }}
                 />
               </Box>
+
+              <Box
+                  display={{ md: "block", xs: "none" }}
+                  sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4, width: "100%" }}
+                  marginTop={{ md: 8, xs: 4 }}
+                >
+                  <Typography
+                    variant='h6'
+                    sx={{
+                      color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                      fontWeight: 'bold',
+                      fontSize: '18px'
+                    }}
+                  >
+                    {t('Review_product')} <b style={{ color: theme.palette.primary.main }}>{listReviews?.length}</b> {t("ratings")}
+                  </Typography>
+                  <Box sx={{ width: "100%" }}>
+                    <CustomCarousel
+                      arrows
+                      showDots={true}
+                      ssr={true}
+                      responsive={{
+                        superLargeDesktop: {
+                          breakpoint: { max: 4000, min: 3000 },
+                          items: 4
+                        },
+                        desktop: {
+                          breakpoint: { max: 3000, min: 1024 },
+                          items: 3
+                        },
+                        tablet: {
+                          breakpoint: { max: 1024, min: 464 },
+                          items: 2
+                        },
+                        mobile: {
+                          breakpoint: { max: 464, min: 0 },
+                          items: 1
+                        }
+                      }}
+                    >
+                      {listReviews.map((review: TReviewItem) => {
+                        return (
+                          <Box key={review._id} sx={{ margin: "0 10px" }}>
+                            <CardReview item={review} />
+                          </Box>
+                        )
+                      })}
+                    </CustomCarousel>
+                  </Box>
+                </Box>
             </Grid>
-            
+
             <Grid container item md={3} xs={12} mt={{ md: 0, xs: 5 }}>
               <Box
                 sx={{
@@ -555,7 +641,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                 </Box>
               </Box>
             </Grid>
-            
+
             <Grid container item md={8} xs={12}>
               <Box
                 sx={{
