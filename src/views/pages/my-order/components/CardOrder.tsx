@@ -16,7 +16,7 @@ import Icon from 'src/components/Icon'
 import { t } from 'i18next'
 
 // ** Utils
-import { convertUpdateMultipleProductsCart, formatNumberToLocal,  } from 'src/utils'
+import { convertUpdateMultipleProductsCart, formatNumberToLocal } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
@@ -196,7 +196,7 @@ const CardOrder: NextPage<TProps> = props => {
         </Box>
 
         <Divider />
-        
+
         <Box
           mt={2}
           mb={2}
@@ -354,6 +354,7 @@ const CardOrder: NextPage<TProps> = props => {
               gap: '2px',
               fontWeight: 'bold'
             }}
+            onClick={handleNavigateDetailsOrder}
           >
             {t('View_details')}
           </Button>
