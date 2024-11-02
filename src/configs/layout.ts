@@ -50,12 +50,18 @@ export const VerticalItems = () => {
         {
           title: t('List_product'),
           icon: 'icon-park-outline:ad-product',
-          path: ROUTE_CONFIG.MANAGE_PRODUCT.PRODUCT
+          path: ROUTE_CONFIG.MANAGE_PRODUCT.PRODUCT,
+          permission: PERMISSIONS.MANAGE_PRODUCT.PRODUCT.VIEW
         },
         {
           title: t('Type_product'),
           icon: 'material-symbols-light:category-outline',
           path: ROUTE_CONFIG.MANAGE_PRODUCT.MANAGE_TYPE_PRODUCT
+        },
+        {
+          title: t('Comment'),
+          icon: 'material-symbols-light:comment-outline',
+          path: ROUTE_CONFIG.MANAGE_PRODUCT.COMMENT
         }
       ]
     },

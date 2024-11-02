@@ -1,6 +1,6 @@
 export const ROUTE_CONFIG = {
   MY_PROFILE: '/my-profile',
-  HOME: '/',
+  HOME: '/home',
   PRODUCT: '/product',
   LOGIN: '/login',
   CHANGE_PASSWORD: '/change-password',
@@ -17,7 +17,8 @@ export const ROUTE_CONFIG = {
   },
   MANAGE_PRODUCT: {
     PRODUCT: '/manage-product/product',
-    MANAGE_TYPE_PRODUCT: '/manage-product/product-type'
+    MANAGE_TYPE_PRODUCT: '/manage-product/product-type',
+    COMMENT: '/manage-product/comment'
   },
   MANAGE_ORDER: {
     ORDER: '/manage-order/order',

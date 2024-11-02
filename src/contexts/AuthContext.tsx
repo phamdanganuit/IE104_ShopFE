@@ -28,6 +28,7 @@ import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-product'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -115,17 +116,17 @@ const AuthProvider = ({ children }: Props) => {
       setUser(null)
       clearLocalUserData()
 
+      // signOut()
       if (!LIST_PAGE_PUBLIC?.some(item => router.asPath?.startsWith(item))) {
         if (router.asPath !== '/') {
           router.replace({
-            pathname: '/login',
+            pathname: ROUTE_CONFIG.LOGIN,
             query: { returnUrl: router.asPath }
           })
         } else {
-          router.replace('/login')
+          router.replace(ROUTE_CONFIG.LOGIN)
         }
       }
-
       dispatch(
         updateProductToCart({
           orderItems: []
