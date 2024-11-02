@@ -83,7 +83,6 @@ const MyOrderPage: NextPage<TProps> = () => {
     isLoading: loadingReview
   } = useSelector((state: RootState) => state.reviews)
 
-
   // ** fetch API
   const handleConfirmCancel = () => {
     dispatch(cancelOrderProductOfMeAsync(dataOrder._id))
@@ -166,6 +165,8 @@ const MyOrderPage: NextPage<TProps> = () => {
   }
 
   const handlePaymentTypeOrder = (type: string) => {
+    console.log('🚀 ~ handlePaymentTypeOrder ~ type:', type)
+
     switch (type) {
       case PAYMENT_DATA.VN_PAYMENT.value: {
         handlePaymentVNPay()
