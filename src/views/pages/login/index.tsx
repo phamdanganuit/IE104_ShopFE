@@ -39,6 +39,8 @@ import LoginLight from '/public/images/login-light.png'
 import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import { signIn, useSession } from 'next-auth/react'
+
 import { ROUTE_CONFIG } from 'src/configs/route'
 
 type TProps = {}
