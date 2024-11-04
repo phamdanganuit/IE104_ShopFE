@@ -22,13 +22,19 @@ type TProps = {
 }
 
 const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
-  const { pageSize, page, rowLength, pageSizeOptions, onChangePagination,isHideShowed, ...rests } = props
+  const { pageSize, page, rowLength, pageSizeOptions, onChangePagination, isHideShowed, ...rests } = props
 
   const { t } = useTranslation()
 
   return (
     <Box
-      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingLeft: '8px' }}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: isHideShowed ? 'center' : 'space-between',
+        width: '100%',
+        paddingLeft: '8px'
+      }}
     >
       {!isHideShowed ? (
         <>
@@ -47,31 +53,44 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
             <Box></Box>
           )}
         </>
-      ) : (<Box></Box>)}
+      ) : (
+        <Box></Box>
+      )}
       <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-        <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-          <span>{t('Số dòng hiển thị')}</span>
-          <Select
-            size='small'
-            sx={{
-              width: '80px',
-              padding: 0,
-              '& .MuiSelect-select.MuiSelect-select.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputSizeSmall':
-                { minWidth: 'unset !important', padding: '8.5px 12px 8.5px 24px !important' }
-            }}
-            value={pageSize}
-            onChange={e => onChangePagination(1, +e.target.value)}
-          >
-            {pageSizeOptions.map(opt => {
-              return (
-                <MenuItem value={opt} key={opt}>
-                  {opt}
-                </MenuItem>
-              )
-            })}
-          </Select>
-        </Box>
-        <StylePagination color='primary' {...rests} />
+        {!isHideShowed && (
+          <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+            <span>{t('Số dòng hiển thị')}</span>
+            <Select
+              size='small'
+              sx={{
+                width: '80px',
+                padding: 0,
+                '& .MuiSelect-select.MuiSelect-select.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputSizeSmall':
+                  { minWidth: 'unset !important', padding: '8.5px 12px 8.5px 24px !important' }
+              }}
+              value={pageSize}
+              onChange={e => onChangePagination(1, +e.target.value)}
+            >
+              {pageSizeOptions.map(opt => {
+                return (
+                  <MenuItem value={opt} key={opt}>
+                    {opt}
+                  </MenuItem>
+                )
+              })}
+            </Select>
+          </Box>
+        )}
+
+        <StylePagination
+          onChange={(e, page: number) => {
+            onChangePagination(page, pageSize)
+          }}
+          color='primary'
+          page={page}
+          count={Math.ceil(rowLength / pageSize)}
+          {...rests}
+        />
       </Box>
     </Box>
   )

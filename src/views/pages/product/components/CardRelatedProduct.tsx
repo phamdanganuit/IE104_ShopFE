@@ -51,7 +51,7 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
 
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
-
+  
   // ** handle
   const handleNavigateDetails = (slug: string) => {
     router.push(`${ROUTE_CONFIG.PRODUCT}/${slug}`)
@@ -137,39 +137,43 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
           )}
         </Box>
 
-        <Typography variant='body2' color='text.secondary'>
-          {item.countInStock > 0 ? (
-            <>{t('Count_in_stock_product', { count: item.countInStock })}</>
-          ) : (
-            <Box
+        {item.countInStock > 0 ? (
+          <Typography variant='body2' color='text.secondary' sx={{ my: 1 }}>
+            <>{t('Count_in_stock')}</> <b>{item.countInStock}</b> <>{t('Product')}</>
+          </Typography>
+        ) : (
+          <Box
+            sx={{
+              backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
+              width: '60px',
+              height: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '2px',
+              my: 1
+            }}
+          >
+            <Typography
+              variant='h6'
               sx={{
-                backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
-                width: '60px',
-                height: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '2px',
-                my: 1
+                color: theme.palette.error.main,
+                fontSize: '12px',
+                whiteSpace: 'nowrap'
               }}
             >
-              <Typography
-                variant='h6'
-                sx={{
-                  color: theme.palette.error.main,
-                  fontSize: '12px',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Hết hàng
-              </Typography>
-            </Box>
-          )}
-        </Typography>
+              Hết hàng
+            </Typography>
+          </Box>
+        )}
 
-        {item.sold && (
+        {item.sold ? (
           <Typography variant='body2' color='text.secondary'>
-            <>{t('Sold_product', { count: item.sold })}</>
+            <>{t('Sold_product')}</> <b>{item.sold}</b> <>{t('Product')}</>
+          </Typography>
+        ) : (
+          <Typography variant='body2' color='text.secondary'>
+            {t('No_sell_product')}
           </Typography>
         )}
         {item?.location?.name && (
@@ -189,9 +193,8 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
         )}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {!!item.averageRating && (
+            {!!item.averageRating ? (
               <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-                <b>{item.averageRating}</b>
                 <Rating
                   name='read-only'
                   sx={{ fontSize: '16px' }}
@@ -200,6 +203,8 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
                   readOnly
                 />
               </Typography>
+            ) : (
+              <Rating name='read-only' sx={{ fontSize: '16px' }} defaultValue={0} precision={0.5} readOnly />
             )}
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               {!!item.totalReviews ? <b>{item.totalReviews}</b> : <span>{t('not_review')}</span>}
