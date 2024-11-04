@@ -1,16 +1,13 @@
 // ** Type Imports
-import { useTheme } from '@mui/material'
 import { Palette } from '@mui/material'
 import { Skin } from 'src/types/layouts'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 const DefaultPalette = (mode: Palette['mode'], skin: Skin): Palette => {
-  const theme = useTheme()
-
   // ** Vars
   const whiteColor = '#FFF'
-  const lightColor = 'rgba(255, 255, 255, 0.8)'
-  const darkColor = hexToRGBA(theme.palette.primary.main, 0.7)
+  const lightColor = '#2f2b3d'
+  const darkColor = '#d0d4f1'
   const darkPaperBgColor = '#2F3349'
   const mainColor = mode === 'light' ? lightColor : darkColor
 
@@ -33,9 +30,9 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin): Palette => {
       darkPaperBg: darkPaperBgColor,
       bodyBg: mode === 'light' ? '#F8F7FA' : '#25293C', // Same as palette.background.default but doesn't consider bordered skin
       trackBg: mode === 'light' ? '#F1F0F2' : '#363B54',
-      avatarBg: mode === 'light' ? '#dcdcdc' : '#4A5072',
+      avatarBg: mode === 'light' ? '#DBDADE' : '#4A5072',
       tableHeaderBg: mode === 'light' ? '#F6F6F7' : '#4A5072',
-      borderColor: `rgba(${mainColor}, 0.16)`
+      borderColor: `${hexToRGBA(mainColor, 0.16)}`
     },
     mode: mode,
     common: {
@@ -95,23 +92,23 @@ const DefaultPalette = (mode: Palette['mode'], skin: Skin): Palette => {
       A700: '#616161'
     },
     text: {
-      primary: `rgba(${mainColor}, 0.78)`,
-      secondary: `rgba(${mainColor}, 0.68)`,
-      disabled: `rgba(${mainColor}, 0.42)`
+      primary: `${hexToRGBA(mainColor, 0.78)}`,
+      secondary: `${hexToRGBA(mainColor, 0.68)}`,
+      disabled: `${hexToRGBA(mainColor, 0.42)}`
     },
-    divider: `rgba(${mainColor}, 0.16)`,
+    divider: `${hexToRGBA(mainColor, 0.16)}`,
     background: {
       paper: mode === 'light' ? whiteColor : darkPaperBgColor,
       default: defaultBgColor()
     },
     action: {
-      active: `rgba(${mainColor}, 0.54)`,
-      hover: `rgba(${mainColor}, 0.04)`,
-      selected: `rgba(${mainColor}, 0.06)`,
+      active: `${hexToRGBA(mainColor, 0.54)}`,
+      hover: `${hexToRGBA(mainColor, 0.04)}`,
+      selected: `${hexToRGBA(mainColor, 0.06)}`,
       selectedOpacity: 0.06,
-      disabled: `rgba(${mainColor}, 0.26)`,
-      disabledBackground: `rgba(${mainColor}, 0.12)`,
-      focus: `rgba(${mainColor}, 0.12)`
+      disabled: `${hexToRGBA(mainColor, 0.26)}`,
+      disabledBackground: `${hexToRGBA(mainColor, 0.12)}`,
+      focus: `${hexToRGBA(mainColor, 0.12)}`
     }
   } as Palette
 }
