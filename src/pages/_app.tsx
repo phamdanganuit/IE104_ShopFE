@@ -30,6 +30,8 @@ import { AxiosInterceptor } from 'src/helpers/axios'
 
 // ** Global css styles
 import 'src/styles/globals.scss'
+import "react-multi-carousel/lib/styles.css";
+
 
 // ** React Query
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

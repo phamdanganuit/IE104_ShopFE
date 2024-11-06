@@ -52,11 +52,15 @@ const CreateEditRole = (props: TCreateEditRole) => {
     return res.data
   }
 
-  const { isPending: isLoadingCreate, mutate: mutateCreateRole } = useMutation({
+  const {
+    isPending: isLoadingCreate,
+    mutate: mutateCreateRole,
+  } = useMutation({
     mutationFn: fetchCreateRole,
     mutationKey: [queryKeys.create_role],
-    onSuccess: newRole => {
+    onSuccess: (newRole) => {
       queryClient.setQueryData([queryKeys.role_list, sortBy, searchBy, -1, -1], (oldData: any) => {
+
         return { ...oldData, roles: [...oldData.roles, newRole] }
       })
       onClose()
@@ -64,11 +68,14 @@ const CreateEditRole = (props: TCreateEditRole) => {
     },
     onError: () => {
       toast.success(t('Create_role_error'))
-    }
+    },
   })
 
-  const { isPending: isLoadingEdit, mutate: mutateEditRole } = useMutationEditRole({
-    onSuccess: newRole => {
+  const {
+    isPending: isLoadingEdit,
+    mutate: mutateEditRole,
+  } = useMutationEditRole({
+    onSuccess: (newRole) => {
       queryClient.setQueryData([queryKeys.role_list, sortBy, searchBy, -1, -1], (oldData: any) => {
         const editedRole = oldData?.roles?.find((item: any) => item._id == newRole._id)
         if (editedRole) {
@@ -80,9 +87,9 @@ const CreateEditRole = (props: TCreateEditRole) => {
       onClose()
       toast.success(t('Update_role_success'))
     },
-    onError: errr => {
+    onError: (errr) => {
       toast.error(t('Update_role_error'))
-    }
+    },
   })
 
   const schema = yup.object().shape({
@@ -90,7 +97,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
   })
 
   const defaultValues = {
-    name: ''
+    name: '',
   }
 
   const {
@@ -110,6 +117,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
         mutateEditRole({ name: data?.name, id: idRole })
       } else {
         mutateCreateRole({ name: data?.name, permissions: [PERMISSIONS.DASHBOARD] })
+
       }
     }
   }
@@ -121,21 +129,26 @@ const CreateEditRole = (props: TCreateEditRole) => {
     return res.data
   }
 
-  const { data: rolesDetails, isFetching: isLoadingDetails } = useQuery({
-    queryKey: [queryKeys.role_detail, idRole],
-    queryFn: () => fetchDetailsRole(idRole || ''),
-    refetchOnWindowFocus: false,
+  const {
+    data: rolesDetails,
+    isFetching: isLoadingDetails,
+  } = useQuery(
+    {
+      queryKey: [queryKeys.role_detail, idRole],
+      queryFn: () => fetchDetailsRole(idRole || ''),
+      refetchOnWindowFocus: false,
 
-    // refetchOnReconnect: false,
-    staleTime: 5000,
-    gcTime: 10000,
-    enabled: !!idRole,
-    placeholderData: () => {
-      const roles = (queryClient.getQueryData([queryKeys.role_list, sortBy, searchBy]) as any)?.roles
+      // refetchOnReconnect: false,
+      staleTime: 5000,
+      gcTime: 10000,
+      enabled: !!idRole,
+      placeholderData: () => {
+        const roles = (queryClient.getQueryData([queryKeys.role_list, sortBy, searchBy]) as any)?.roles
 
-      return roles?.find((item: { _id: string }) => item._id === idRole)
-    }
-  })
+        return roles?.find((item: { _id: string }) => item._id === idRole)
+      },
+    },
+  )
 
   useEffect(() => {
     if (!open) {
@@ -152,7 +165,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
         name: rolesDetails?.name
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rolesDetails])
 
   return (
@@ -176,7 +189,6 @@ const CreateEditRole = (props: TCreateEditRole) => {
               <Icon icon='material-symbols-light:close' fontSize={'30px'} />
             </IconButton>
           </Box>
-          
           <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
             <Box
               sx={{
@@ -195,6 +207,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
                   <CustomTextField
                     required
                     fullWidth
+
                     label={t('Name_role')}
                     onChange={onChange}
                     onBlur={onBlur}

@@ -1,5 +1,4 @@
-
-export const PERMISSIONS:any = {
+export const PERMISSIONS = {
   ADMIN: 'ADMIN.GRANTED',
   BASIC: 'BASIC.PUBLIC',
   DASHBOARD: 'DASHBOARD',
@@ -14,6 +13,10 @@ export const PERMISSIONS:any = {
       CREATE: 'MANAGE_PRODUCT.PRODUCT_TYPE.CREATE',
       UPDATE: 'MANAGE_PRODUCT.PRODUCT_TYPE.UPDATE',
       DELETE: 'MANAGE_PRODUCT.PRODUCT_TYPE.DELETE'
+    },
+    COMMENT: {
+      UPDATE: 'MANAGE_PRODUCT.COMMENT.UPDATE',
+      DELETE: 'MANAGE_PRODUCT.COMMENT.DELETE'
     }
   },
   SYSTEM: {
@@ -37,7 +40,6 @@ export const PERMISSIONS:any = {
     },
     ORDER: {
       VIEW: 'MANAGE_ORDER.ORDER.VIEW',
-      CREATE: 'MANAGE_ORDER.ORDER.CREATE',
       UPDATE: 'MANAGE_ORDER.ORDER.UPDATE',
       DELETE: 'MANAGE_ORDER.ORDER.DELETE'
     }
@@ -78,7 +80,7 @@ export const LIST_DATA_PERMISSIONS: any = [
     name: 'Product',
     isParent: false,
     value: 'PRODUCT',
-    parentValue: 'MANAGE_PRODUCT',
+    parentValue: 'MANAGE_PRODUCT'
   },
   {
     id: 3,
@@ -87,6 +89,15 @@ export const LIST_DATA_PERMISSIONS: any = [
     value: 'PRODUCT_TYPE',
     parentValue: 'MANAGE_PRODUCT',
     isHideView: true
+  },
+  {
+    id: 14,
+    name: 'Comment',
+    isParent: false,
+    value: 'COMMENT',
+    parentValue: 'MANAGE_PRODUCT',
+    isHideView: true,
+    isHideCreate: true
   },
   { id: 4, name: 'System', isParent: true, value: 'SYSTEM' },
   {
@@ -118,7 +129,8 @@ export const LIST_DATA_PERMISSIONS: any = [
     name: 'Order',
     isParent: false,
     value: 'ORDER',
-    parentValue: 'MANAGE_ORDER'
+    parentValue: 'MANAGE_ORDER',
+    isHideCreate: true
   },
   { id: 10, name: 'Settings', isParent: true, value: 'SETTING' },
   {

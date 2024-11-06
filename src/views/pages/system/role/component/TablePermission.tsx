@@ -32,7 +32,7 @@ const TablePermission = (props: TTablePermission) => {
   // handle
   const getValuePermission = (value: string, mode: string, parentValue?: string) => {
     try {
-      return parentValue ? PERMISSIONS[parentValue][value][mode] : PERMISSIONS[value]
+      return parentValue ? (PERMISSIONS as any)[parentValue][value][mode] : (PERMISSIONS as any)[value]
     } catch (error) {
       return ''
     }
@@ -40,8 +40,8 @@ const TablePermission = (props: TTablePermission) => {
 
   const handleIsChecked = (value: string, parentValue?: string) => {
     const allValue = parentValue
-      ? getAllValueOfObject(PERMISSIONS[parentValue][value])
-      : getAllValueOfObject(PERMISSIONS[value])
+      ? getAllValueOfObject((PERMISSIONS as any)[parentValue][value])
+      : getAllValueOfObject((PERMISSIONS as any)[value])
 
     const isCheckedAll = allValue.every(item => permissionSelected.includes(item))
 
@@ -57,7 +57,7 @@ const TablePermission = (props: TTablePermission) => {
       const filtered = permissionSelected.filter(item => !allValue.includes(item))
       setPermissionSelected(filtered)
     } else {
-      setPermissionSelected(Array.from(new Set([...permissionSelected, ...allValue])))
+      setPermissionSelected([...Array.from(new Set([...permissionSelected, ...allValue]))])
     }
   }
 
@@ -94,7 +94,6 @@ const TablePermission = (props: TTablePermission) => {
 
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
-
         const { isChecked, allValue } = handleIsChecked(row.value, row.parentValue)
 
         return (
@@ -154,7 +153,7 @@ const TablePermission = (props: TTablePermission) => {
           <>
             {!row.isHideView && !row.isParent && (
               <Checkbox
-                disabled={disabled}
+                disabled={disabled || row.value === PERMISSIONS.DASHBOARD}
                 value={value}
                 onChange={e => {
                   handleOnChangeCheckBox(e.target.value)
