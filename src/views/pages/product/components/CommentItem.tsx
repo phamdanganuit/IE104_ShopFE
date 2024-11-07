@@ -54,6 +54,8 @@ const CommentItem = ({ item }: TProps) => {
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
   const { isLoading, isSuccessDelete, isSuccessEdit } = useSelector((state: RootState) => state.comments)
+
+  // ** Handle
   const handleCancelReply = () => {
     setIsReply(false)
     if (editComment) {
@@ -190,6 +192,7 @@ const CommentItem = ({ item }: TProps) => {
               </>
             )}
           </Box>
+
         </Box>
         {!editComment && (
           <Box sx={{ display: 'flex', gap: 1, ml: '80px' }}>

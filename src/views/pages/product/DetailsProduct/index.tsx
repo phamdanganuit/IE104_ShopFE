@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 
 // ** React
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 
 // ** Mui
 import { Box, Button, Grid, IconButton, Rating, Typography, useTheme } from '@mui/material'
@@ -22,13 +22,15 @@ import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
 
 // ** Utils
-import { convertUpdateProductToCart, formatFilter, formatNumberToLocal, isExpiry } from 'src/utils'
+import { cloneDeep, convertUpdateProductToCart, formatFilter, formatNumberToLocal, isExpiry } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-product'
+import { resetInitialState } from 'src/stores/reviews'
+import { resetInitialState as resetInitialStateComment } from 'src/stores/comments'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -48,6 +50,15 @@ import { getAllReviews } from 'src/services/reviewProduct'
 import { TReviewItem } from 'src/types/reviews'
 import CardReview from 'src/views/pages/product/components/CardReview'
 import CardSkeletonRelated from 'src/views/pages/product/components/CardSkeletonRelated'
+import { getAllCommentsPublic } from 'src/services/commentProduct'
+import { TCommentItemProduct } from 'src/types/comment'
+import CommentItem from 'src/views/pages/product/components/CommentItem'
+import { createCommentAsync } from 'src/stores/comments/actions'
+import { ACTION_SOCKET_COMMENT } from 'src/configs/socketIo'
+import connectSocketIO from 'src/helpers/socket'
+import toast from 'react-hot-toast'
+import { OBJECT_TYPE_ERROR_REVIEW } from 'src/configs/error'
+import CommentInput from 'src/views/pages/product/components/CommentInput'
 
 type TProps = {}
 
@@ -57,6 +68,10 @@ const DetailsProductPage: NextPage<TProps> = () => {
   const [dataProduct, setDataProduct] = useState<TProduct | any>({})
   const [listRelatedProduct, setRelatedProduct] = useState<TProduct[]>([])
   const [listReviews, setListReview] = useState<TReviewItem[]>([])
+  const [listComment, setListComment] = useState<{ data: TCommentItemProduct[]; total: number }>({
+    data: [],
+    total: 0
+  })
 
   const [amountProduct, setAmountProduct] = useState(1)
 
@@ -71,6 +86,34 @@ const DetailsProductPage: NextPage<TProps> = () => {
 
   // ** redux
   const { orderItems } = useSelector((state: RootState) => state.orderProduct)
+
+  const {
+    isSuccessEdit,
+    isErrorEdit,
+    isLoading,
+    messageErrorEdit,
+    isErrorDelete,
+    isSuccessDelete,
+    messageErrorDelete,
+    typeError
+  } = useSelector((state: RootState) => state.reviews)
+
+  const {
+    isSuccessCreate: isSuccessCreateComment,
+    isErrorCreate: isErrorCreateComment,
+    messageErrorCreate: messageErrorCreateComment,
+    isSuccessReply,
+    isErrorReply,
+    isLoading: isLoadingComment,
+    messageErrorReply,
+    isSuccessDelete: isSuccessDeleteComment,
+    isErrorDelete: isErrorDeleteComment,
+    messageErrorDelete: messageErrorDeleteComment,
+    isSuccessEdit: isSuccessEditComment,
+    isErrorEdit: isErrorEditComment,
+    messageErrorEdit: messageErrorEditComment
+  } = useSelector((state: RootState) => state.comments)
+
   const dispatch: AppDispatch = useDispatch()
 
   // fetch api
@@ -127,6 +170,27 @@ const DetailsProductPage: NextPage<TProps> = () => {
       })
   }
 
+  const fetchListCommentProduct = async (productId: string) => {
+    setLoading(true)
+    await getAllCommentsPublic({
+      params: { limit: -1, page: -1, order: 'createdAt desc', isPublic: true, productId: productId }
+    })
+      .then(async response => {
+        setLoading(false)
+        const data = response?.data
+        if (data) {
+          setListComment({
+            data: data.comments,
+            total: data.totalCount
+          })
+        }
+      })
+
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
   // ** Handle
   const handleUpdateProductToCart = (item: TProduct) => {
     const productCart = getLocalProductCart()
@@ -171,10 +235,156 @@ const DetailsProductPage: NextPage<TProps> = () => {
     )
   }
 
+  const handleComment = (comment: string) => {
+    if (comment) {
+      if (user) {
+        dispatch(
+          createCommentAsync({
+            product: dataProduct._id,
+            user: user?._id,
+            content: comment
+          })
+        )
+      } else {
+        router.replace({
+          pathname: ROUTE_CONFIG.LOGIN,
+          query: { returnUrl: router.asPath }
+        })
+      }
+    }
+  }
+
+  const findCommentByIdRecursive = (comments: TCommentItemProduct[], id: string): undefined | TCommentItemProduct => {
+    const findComment: undefined | TCommentItemProduct = comments.find(item => item._id === id)
+    if (findComment) return findComment
+
+    for (const comment of comments) {
+      if (comment.replies && comment.replies.length > 0) {
+        const findReply: undefined | TCommentItemProduct = findCommentByIdRecursive(comment.replies, id)
+        if (findReply) return findReply
+      }
+    }
+
+    return undefined
+  }
+
+  const deleteCommentByIdRecursive = (comments: TCommentItemProduct[], id: string): undefined | TCommentItemProduct => {
+    const index = comments.findIndex(item => item._id === id)
+    if (index !== -1) {
+      const item = comments[index]
+      comments.splice(index, 1)
+
+      return item
+    }
+
+    for (const comment of comments) {
+      if (comment.replies && comment.replies.length > 0) {
+        const findReply: undefined | TCommentItemProduct = deleteCommentByIdRecursive(comment.replies, id)
+        if (findReply) return findReply
+      }
+    }
+
+    return undefined
+  }
+
+  const deleteManyCommentRecursive = (comments: TCommentItemProduct[], ids: string[]) => {
+    let deletedCount: number = 0
+    ids.forEach(id => {
+      const index = comments.findIndex(item => item._id === id)
+      if (index !== -1) {
+        comments.splice(index, 1)
+        deletedCount += 1
+      }
+    })
+
+    for (const comment of comments) {
+      if (comment.replies && comment.replies.length > 0) {
+        deleteManyCommentRecursive(comment.replies, ids)
+      }
+    }
+
+    return deletedCount
+  }
+
+  const renderCommentItem = (item: TCommentItemProduct, level: number) => {
+    level += 1
+
+    return (
+      <Box sx={{ marginLeft: `${level * 80}px` }}>
+        <CommentItem item={item} />
+        {item.replies && item?.replies?.length > 0 && (
+          <>
+            {item.replies?.map(reply => {
+              return <>{renderCommentItem(reply, level)}</>
+            })}
+          </>
+        )}
+      </Box>
+    )
+  }
+
+  useEffect(() => {
+    const socket = connectSocketIO()
+    const cloneListComment = cloneDeep(listComment)
+
+    socket.on(ACTION_SOCKET_COMMENT.CREATE_COMMENT, data => {
+      const newListComment = cloneListComment.data
+      newListComment.unshift({ ...data })
+
+      setListComment({
+        data: newListComment,
+        total: cloneListComment.total + 1
+      })
+    })
+
+    socket.on(ACTION_SOCKET_COMMENT.REPLY_COMMENT, (data) => {
+      const parentId = data.parent
+      const findParent = cloneListComment?.data?.find((item: TCommentItemProduct) => item?._id === parentId)
+      if (findParent) {
+        findParent?.replies?.push({ ...data })
+        setListComment({
+          data: cloneListComment.data,
+          total: cloneListComment.total + 1
+        })
+      }
+    })
+
+    socket.on(ACTION_SOCKET_COMMENT.UPDATE_COMMENT, data => {
+      const findComment = findCommentByIdRecursive(cloneListComment.data, data._id)
+      if (findComment) {
+        findComment.content = data.content
+        setListComment(cloneListComment)
+      }
+    })
+
+    socket.on(ACTION_SOCKET_COMMENT.DELETE_COMMENT, data => {
+      const deleteComment = deleteCommentByIdRecursive(cloneListComment.data, data._id)
+      if (deleteComment) {
+        const totalDelete = (deleteComment?.replies ? deleteComment?.replies?.length : 0) + 1
+        setListComment({
+          data: cloneListComment.data,
+          total: cloneListComment.total - totalDelete
+        })
+      }
+    })
+
+    socket.on(ACTION_SOCKET_COMMENT.DELETE_MULTIPLE_COMMENT, data => {
+      const deletedCount = deleteManyCommentRecursive(cloneListComment.data, data)
+      setListComment({
+        data: cloneListComment.data,
+        total: cloneListComment.total - deletedCount
+      })
+    })
+
+    return () => {
+      socket.disconnect()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listComment])
+
   useEffect(() => {
     if (dataProduct._id) {
-      // fetchListCommentProduct(dataProduct._id)
-
+      fetchListCommentProduct(dataProduct._id)
       fetchGetAllListReviewByProduct(dataProduct._id)
     }
   }, [dataProduct._id])
@@ -190,10 +400,92 @@ const DetailsProductPage: NextPage<TProps> = () => {
     return isExpiry(dataProduct.discountStartDate, dataProduct.discountEndDate)
   }, [dataProduct])
 
+  useEffect(() => {
+    if (isSuccessEdit) {
+      toast.success(t('Update_review_success'))
+      fetchGetAllListReviewByProduct(dataProduct._id)
+      dispatch(resetInitialState())
+    } else if (isErrorEdit && messageErrorEdit && typeError) {
+      const errorConfig = OBJECT_TYPE_ERROR_REVIEW[typeError]
+      if (errorConfig) {
+        toast.error(t(errorConfig))
+      } else {
+        toast.error(t('Update_review_error'))
+      }
+      dispatch(resetInitialState())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessEdit, isErrorEdit, messageErrorEdit, typeError])
+
+  useEffect(() => {
+    if (isSuccessDelete) {
+      toast.success(t('Delete_review_success'))
+      fetchGetAllListReviewByProduct(dataProduct._id)
+      dispatch(resetInitialState())
+    } else if (isErrorDelete && messageErrorDelete) {
+      toast.error(t('Delete_review_error'))
+      dispatch(resetInitialState())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
+
+  useEffect(() => {
+    if (isSuccessDeleteComment) {
+      toast.success(t('Delete_comment_success'))
+      dispatch(resetInitialStateComment())
+    } else if (isErrorDeleteComment && messageErrorDeleteComment) {
+      toast.error(t('Delete_comment_error'))
+      dispatch(resetInitialStateComment())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessDeleteComment, isErrorDeleteComment, messageErrorDeleteComment])
+
+  useEffect(() => {
+    if (isSuccessCreateComment) {
+      toast.success(t('Create_comment_success'))
+
+      // fetchListCommentProduct()
+      dispatch(resetInitialStateComment())
+    } else if (isErrorCreateComment && messageErrorCreateComment) {
+      toast.error(t('Create_comment_error'))
+      dispatch(resetInitialStateComment())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessCreateComment, isErrorCreateComment, messageErrorCreateComment])
+
+  useEffect(() => {
+    if (isSuccessEditComment) {
+      toast.success(t('Update_comment_success'))
+      dispatch(resetInitialStateComment())
+    } else if (isErrorEditComment && messageErrorEditComment) {
+      toast.error(t('Update_comment_error'))
+      dispatch(resetInitialStateComment())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessEditComment, isErrorEditComment, messageErrorEditComment, typeError])
+
+  useEffect(() => {
+    if (isSuccessReply) {
+      toast.success(t('Create_reply_success'))
+      dispatch(resetInitialStateComment())
+    } else if (isErrorReply && messageErrorReply) {
+      toast.error(t('Create_reply_error'))
+      dispatch(resetInitialStateComment())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessReply, isErrorReply, messageErrorReply])
+
   return (
     <>
-      {loading && <Spinner />}
+      {(loading || isLoadingComment) && <Spinner />}
       <Grid container>
+        <Box marginTop={{ md: 5, xs: 4 }}>
+          <Typography sx={{ color: theme.palette.primary.main, fontWeight: '600', marginBottom: '8px' }}>
+            {t('Product_details')}
+            {' / '}
+            {dataProduct.type?.name} / {dataProduct?.name}
+          </Typography>
+        </Box>
         <Grid
           container
           item
@@ -236,7 +528,9 @@ const DetailsProductPage: NextPage<TProps> = () => {
                 </Box>
                 <Typography variant='body2' color='text.secondary'>
                   {dataProduct.countInStock > 0 ? (
-                    <>{t('Count_in_stock_product', { count: dataProduct.countInStock })}</>
+                    <>
+                      {t('Still')} <b>{dataProduct?.countInStock}</b> <span>{t('product_in_stock')}</span>
+                    </>
                   ) : (
                     <Box
                       sx={{
@@ -293,8 +587,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                   <Typography sx={{ display: 'flex', alignItems: 'center' }}>
                     {dataProduct.totalReviews > 0 ? (
                       <span>
-                        <b>{dataProduct.totalReviews}</b>
-                        {t('Review')}
+                        <b>{dataProduct.totalReviews}</b> {t('Review')}
                       </span>
                     ) : (
                       <span>{t('not_review')}</span>
@@ -492,27 +785,55 @@ const DetailsProductPage: NextPage<TProps> = () => {
             </Grid>
           </Box>
         </Grid>
-
         <Grid container md={12} xs={12} mt={6}>
           <Grid container>
-            <Grid
-              container
-              item
-              md={9}
-              xs={12}
-              sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}
-            >
-              <Box sx={{ height: '100%', width: '100%' }}>
+            <Grid container item md={9} xs={12}>
+              <Box sx={{ width: '100%' }}>
+                <Box sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      mt: 2,
+                      backgroundColor: theme.palette.customColors.bodyBg,
+                      padding: '8px',
+                      borderRadius: '8px'
+                    }}
+                  >
+                    <Typography
+                      variant='h6'
+                      sx={{
+                        color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                        fontWeight: 'bold',
+                        fontSize: '18px'
+                      }}
+                    >
+                      {t('Description_product')}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      mt: 4,
+                      color: `rgba(${theme.palette.customColors.main}, 0.42)`,
+                      fontSize: '14px',
+                      backgroundColor: theme.palette.customColors.bodyBg,
+                      padding: 4,
+                      borderRadius: '10px'
+                    }}
+                    dangerouslySetInnerHTML={{ __html: dataProduct.description }}
+                  />
+                </Box>
                 <Box
+                  display={{ md: 'block', xs: 'none' }}
                   sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
-                    mt: 2,
-                    backgroundColor: theme.palette.customColors.bodyBg,
-                    padding: '8px',
-                    borderRadius: '8px'
+                    backgroundColor: theme.palette.background.paper,
+                    borderRadius: '15px',
+                    py: 5,
+                    px: 4,
+                    width: '100%'
                   }}
+                  marginTop={{ md: 5, xs: 4 }}
                 >
                   <Typography
                     variant='h6'
@@ -522,80 +843,79 @@ const DetailsProductPage: NextPage<TProps> = () => {
                       fontSize: '18px'
                     }}
                   >
-                    {t('Description_product')}
+                    {t('Review_product')} <b style={{ color: theme.palette.primary.main }}>{listReviews?.length}</b>{' '}
+                    {t('ratings')}
                   </Typography>
+                  <Box sx={{ width: '100%' }}>
+                    <CustomCarousel
+                      arrows
+                      showDots={true}
+                      ssr={true}
+                      responsive={{
+                        superLargeDesktop: {
+                          breakpoint: { max: 4000, min: 3000 },
+                          items: 4
+                        },
+                        desktop: {
+                          breakpoint: { max: 3000, min: 1024 },
+                          items: 3
+                        },
+                        tablet: {
+                          breakpoint: { max: 1024, min: 464 },
+                          items: 2
+                        },
+                        mobile: {
+                          breakpoint: { max: 464, min: 0 },
+                          items: 1
+                        }
+                      }}
+                    >
+                      {listReviews.map((review: TReviewItem) => {
+                        return (
+                          <Box key={review._id} sx={{ margin: '0 10px' }}>
+                            <CardReview item={review} />
+                          </Box>
+                        )
+                      })}
+                    </CustomCarousel>
+                  </Box>
                 </Box>
                 <Box
+                  display={{ md: 'block', xs: 'none' }}
                   sx={{
-                    mt: 4,
-                    color: `rgba(${theme.palette.customColors.main}, 0.42)`,
-                    fontSize: '14px',
-                    backgroundColor: theme.palette.customColors.bodyBg,
-                    padding: 4,
-                    borderRadius: '10px'
+                    backgroundColor: theme.palette.background.paper,
+                    borderRadius: '15px',
+                    py: 5,
+                    px: 4,
+                    width: '100%'
                   }}
-                  dangerouslySetInnerHTML={{ __html: dataProduct.description }}
-                />
-              </Box>
-
-              <Box
-                display={{ md: 'block', xs: 'none' }}
-                sx={{
-                  backgroundColor: theme.palette.background.paper,
-                  borderRadius: '15px',
-                  py: 5,
-                  px: 4,
-                  width: '100%'
-                }}
-                marginTop={{ md: 8, xs: 4 }}
-              >
-                <Typography
-                  variant='h6'
-                  sx={{
-                    color: `rgba(${theme.palette.customColors.main}, 0.68)`,
-                    fontWeight: 'bold',
-                    fontSize: '18px'
-                  }}
+                  marginTop={{ md: 5, xs: 4 }}
                 >
-                  {t('Review_product')} <b style={{ color: theme.palette.primary.main }}>{listReviews?.length}</b>{' '}
-                  {t('ratings')}
-                </Typography>
-                <Box sx={{ width: '100%' }}>
-                  <CustomCarousel
-                    arrows
-                    showDots={true}
-                    ssr={true}
-                    responsive={{
-                      superLargeDesktop: {
-                        breakpoint: { max: 4000, min: 3000 },
-                        items: 4
-                      },
-                      desktop: {
-                        breakpoint: { max: 3000, min: 1024 },
-                        items: 3
-                      },
-                      tablet: {
-                        breakpoint: { max: 1024, min: 464 },
-                        items: 2
-                      },
-                      mobile: {
-                        breakpoint: { max: 464, min: 0 },
-                        items: 1
-                      }
+                  <Typography
+                    variant='h6'
+                    sx={{
+                      color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                      fontWeight: 'bold',
+                      fontSize: '18px',
+                      mb: '8px'
                     }}
                   >
-                    {listReviews.map((review: TReviewItem) => {
-                      return (
-                        <Box key={review._id} sx={{ margin: '0 10px' }}>
-                          <CardReview item={review} />
-                        </Box>
-                      )
-                    })}
-                  </CustomCarousel>
+                    {t('Comment_product')} <b style={{ color: theme.palette.primary.main }}>{listComment?.total}</b>{' '}
+                    {t('comments')}
+                  </Typography>
+                  <Box sx={{ width: '100%' }}>
+                    <CommentInput onApply={handleComment} />
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '30px' }}>
+                      {listComment?.data?.map((comment: TCommentItemProduct) => {
+                        const level: number = -1
+
+                        return <Fragment key={comment._id}>{renderCommentItem(comment, level)}</Fragment>
+                      })}
+                    </Box>
+                  </Box>
                 </Box>
               </Box>
             </Grid>
-
             <Grid container item md={3} xs={12} mt={{ md: 0, xs: 5 }}>
               <Box
                 sx={{
@@ -659,22 +979,104 @@ const DetailsProductPage: NextPage<TProps> = () => {
                 </Box>
               </Box>
             </Grid>
-
-            <Grid container item md={8} xs={12}>
-              <Box
+            <Box
+              display={{ md: 'none', xs: 'block' }}
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: '15px',
+                py: 5,
+                px: 4,
+                width: '100%'
+              }}
+              marginTop={{ md: 5, xs: 4 }}
+            >
+              <Typography
+                variant='h6'
                 sx={{
-                  height: '100%',
-                  width: '100%',
-                  backgroundColor: theme.palette.background.paper,
-                  borderRadius: '15px',
-                  py: 5,
-                  px: 4
+                  color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                  fontWeight: 'bold',
+                  fontSize: '18px'
                 }}
-                marginTop={{ md: 5, xs: 0 }}
               >
-                Review
+                {t('Review_product')} <b style={{ color: theme.palette.primary.main }}>{listReviews?.length}</b>{' '}
+                {t('ratings')}
+              </Typography>
+              <Box sx={{ width: '100%' }}>
+                <CustomCarousel
+                  arrows
+                  showDots={true}
+                  ssr={true}
+                  responsive={{
+                    superLargeDesktop: {
+                      breakpoint: { max: 4000, min: 3000 },
+                      items: 4
+                    },
+                    desktop: {
+                      breakpoint: { max: 3000, min: 1024 },
+                      items: 3
+                    },
+                    tablet: {
+                      breakpoint: { max: 1024, min: 464 },
+                      items: 2
+                    },
+                    mobile: {
+                      breakpoint: { max: 464, min: 0 },
+                      items: 1
+                    }
+                  }}
+                >
+                  {listReviews.map((review: TReviewItem) => {
+                    return (
+                      <Box key={review._id} sx={{ margin: '0 10px' }}>
+                        <CardReview item={review} />
+                      </Box>
+                    )
+                  })}
+                </CustomCarousel>
               </Box>
-            </Grid>
+            </Box>
+            <Box
+              display={{ md: 'none', xs: 'block' }}
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: '15px',
+                py: 5,
+                px: 4,
+                width: '100%'
+              }}
+              marginTop={{ md: 5, xs: 4 }}
+            >
+              <Typography
+                variant='h6'
+                sx={{
+                  color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                  fontWeight: 'bold',
+                  fontSize: '18px'
+                }}
+              >
+                {t('Comment_product')} <b style={{ color: theme.palette.primary.main }}>{listComment?.total}</b>{' '}
+                {t('comments')}
+              </Typography>
+              <Box sx={{ width: '100%' }}>
+                <CommentInput onApply={handleComment} />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                    marginTop: '30px',
+                    maxHeight: '300px',
+                    overflow: 'auto'
+                  }}
+                >
+                  {listComment?.data?.map((comment: TCommentItemProduct) => {
+                    const level: number = -1
+
+                    return <Fragment key={comment._id}>{renderCommentItem(comment, level)}</Fragment>
+                  })}
+                </Box>
+              </Box>
+            </Box>
           </Grid>
         </Grid>
       </Grid>
