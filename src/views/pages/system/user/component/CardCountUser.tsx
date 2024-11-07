@@ -31,6 +31,8 @@ const CardCountUser = (props: any) => {
 
   // ** Props
   const { sx, icon, countUserType, count, iconSize = 24, avatarSize = 38, userType } = props
+  console.log("🚀 ~ CardCountUser ~ countUserType:", countUserType);
+
 
   const mapUserType = {
     1: {
@@ -68,6 +70,7 @@ const CardCountUser = (props: any) => {
             </Typography>
           </Box>
         </Box>
+
         <Avatar variant='rounded' sx={{ width: avatarSize, height: avatarSize }}>
           <Icon icon={icon} fontSize={iconSize} color={(mapUserType as any)[userType]?.themeColor} />
         </Avatar>

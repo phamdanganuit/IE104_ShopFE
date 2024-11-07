@@ -147,7 +147,7 @@ const UserListPage: NextPage<TProps> = () => {
   // ** theme
   const theme = useTheme()
 
-  // fetch api
+  // ** fetch api
   const handleGetListUsers = () => {
     const query = {
       params: { limit: pageSize, page: page, search: searchBy, order: sortBy, ...formatFilter(filterBy) }
@@ -155,7 +155,7 @@ const UserListPage: NextPage<TProps> = () => {
     dispatch(getAllUsersAsync(query))
   }
 
-  // handle
+  // ** handle
   const handleCloseConfirmDeleteUser = () => {
     setOpenDeleteUser({
       open: false,
@@ -263,7 +263,6 @@ const UserListPage: NextPage<TProps> = () => {
       maxWidth: 200,
       renderCell: params => {
         const { row } = params
-        console.log('🚀 ~ row:', row)
 
         return <Typography>{row?.city?.name}</Typography>
       }
@@ -588,7 +587,7 @@ const UserListPage: NextPage<TProps> = () => {
                   multiple
                   options={Object.values(CONSTANT_USER_TYPE)}
                   value={typeSelected}
-                  placeholder={t('User type')}
+                  placeholder={t('User Type')}
                 />
               </Box>
               <Box sx={{ width: '200px' }}>
