@@ -1,11 +1,9 @@
 import { Box, useTheme } from '@mui/material'
 
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { useMemo, useState } from 'react'
 import { Pie } from 'react-chartjs-2'
 import { useTranslation } from 'react-i18next'
 import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
-import { OBJECT_TYPE_USER } from 'src/configs/user'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 interface TProps {
