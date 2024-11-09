@@ -67,9 +67,7 @@ const CardCountRecords = (props: TProps) => {
       }}
     >
       <Box>
-        <Typography sx={{ fontSize: '30px', fontWeight: '600', mb: 4 }}>
-        {t('Statistics')} 
-        </Typography>
+        <Typography sx={{ fontSize: '30px', fontWeight: '600', mb: 4 }}>{t('Statistics')}</Typography>
       </Box>
       <Grid container spacing={6}>
         {data &&

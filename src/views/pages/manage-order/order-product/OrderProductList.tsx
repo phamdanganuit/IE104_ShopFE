@@ -138,7 +138,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
     }
   }
 
-  // fetch api
+  // ** fetch api
   const handleGetListOrderProducts = () => {
     const query = {
       params: { limit: pageSize, page: page, search: searchBy, order: sortBy, ...formatFilter(filterBy) }
@@ -146,7 +146,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
     dispatch(getAllOrderProductsAsync(query))
   }
 
-  // handle
+  // ** handle
   const handleCloseConfirmDeleteOrder = () => {
     setOpenDeleteOrder({
       open: false,

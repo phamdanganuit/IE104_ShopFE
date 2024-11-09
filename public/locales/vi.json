@@ -362,5 +362,15 @@
   "Orders": "Đơn hàng",
   "Reviews": "Đánh giá",
   "Comments": "Bình luận",
-  "Revenue": "Doanh thu"
+  "Revenue": "Doanh thu",
+  "# of Users": "Số người dùng",
+  "# of Orders": "Số đơn hàng",
+  "Mark read all notifications": "Đánh dấu đã đọc tất cả thông báo",
+  "Home Page": "Trang chủ",
+  "Is_delivered": "Đã giao hàng",
+  "Is_paid": "Đã thanh toán",
+  "Create_order": "Tạo đơn hàng",
+  "Wait_payment_order": "Chờ thanh toán",
+  "Wait_delivery_order": "Chờ giao hàng",
+  "Mark read": "Đánh dấu đã đọc"
 }

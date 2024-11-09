@@ -11,6 +11,7 @@ interface TProps {
 
 const CardCountUserType = (props: TProps) => {
   const { data } = props
+
   const mapObject = OBJECT_TYPE_USER()
 
   const { t } = useTranslation()

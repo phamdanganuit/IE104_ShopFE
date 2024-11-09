@@ -18,14 +18,16 @@ import UserDropdown from 'src/views/layouts/components/user-dropdown'
 import ModeToggle from 'src/views/layouts/components/mode-toggle'
 import LanguageDropdown from 'src/views/layouts/components/language-dropdown'
 import CartProduct from 'src/views/layouts/components/cart-product'
+import NotificationDropdown from 'src/views/layouts/components/notification-dropdown'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
-import { Button, useTheme } from '@mui/material'
+import { Button } from '@mui/material'
 import { useRouter } from 'next/router'
 
 // config
 import { ROUTE_CONFIG } from 'src/configs/route'
+import { useTranslation } from 'react-i18next'
 
 const drawerWidth: number = 240
 
@@ -61,9 +63,7 @@ const AppBar = styled(MuiAppBar, {
 }))
 
 const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) => {
-  // ** theme
-  const theme = useTheme()
-
+  const { t } = useTranslation()
   const { user } = useAuth()
   const router = useRouter()
 
@@ -100,16 +100,25 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
             <Icon icon='ic:round-menu' />
           </IconButton>
         )}
-        <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
-          <Link style={{ color: theme.palette.primary.main }} href={ROUTE_CONFIG.HOME}>
-            Dashboard
+        <Typography
+          component='h1'
+          variant='h6'
+          color='primary'
+          noWrap
+          sx={{ flexGrow: 1, fontWeight: '600', cursor: 'pointer' }}
+        >
+          <Link style={{ color: 'inherit' }} href={ROUTE_CONFIG.HOME}>
+            {t('Home Page')}
           </Link>
         </Typography>
         <LanguageDropdown />
         <ModeToggle />
         <CartProduct />
         {user ? (
-          <UserDropdown />
+          <>
+            <NotificationDropdown />
+            <UserDropdown />
+          </>
         ) : (
           <Button variant='contained' sx={{ ml: 2, width: 'auto' }} onClick={handleNavigateLogin}>
             Sign In

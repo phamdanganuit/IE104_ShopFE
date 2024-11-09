@@ -50,8 +50,7 @@ import {
 } from 'src/helpers/storage'
 import FallbackSpinner from 'src/components/fall-back'
 import { ROUTE_CONFIG } from 'src/configs/route'
-
-// import useFcmToken from 'src/hooks/useFcmToken'
+import useFcmToken from 'src/hooks/useFcmToken'
 
 type TProps = {}
 
@@ -77,8 +76,7 @@ const LoginPage: NextPage<TProps> = () => {
 
   // ** Hooks
   const { data: session, status } = useSession()
-
-  // const { fcmToken } = useFcmToken()
+  const { fcmToken } = useFcmToken()
 
   const schema = yup.object().shape({
     email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email')),
@@ -89,6 +87,7 @@ const LoginPage: NextPage<TProps> = () => {
     email: 'admin@gmail.com',
     password: '123456789Kha@'
   }
+
   const {
     handleSubmit,
     control,
@@ -102,7 +101,7 @@ const LoginPage: NextPage<TProps> = () => {
 
   const onSubmit = (data: { email: string; password: string }) => {
     if (!Object.keys(errors)?.length) {
-      login({ ...data, rememberMe: isRemember }, err => {
+      login({ ...data, rememberMe: isRemember, deviceToken: fcmToken }, err => {
         if (err?.response?.data?.typeError === 'INVALID') toast.error(t('The_email_or_password_wrong'))
       })
     }

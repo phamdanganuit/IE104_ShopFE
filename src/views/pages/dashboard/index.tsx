@@ -128,6 +128,7 @@ const Dashboard = () => {
         setLoading(false)
         setListProductPopular(data?.products)
       })
+
       .catch(e => {
         setLoading(false)
       })

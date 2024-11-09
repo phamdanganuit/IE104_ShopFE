@@ -13,29 +13,30 @@ import {
   LoginParams,
   ErrCallbackType,
   UserDataType,
-  LoginFacebookParams,
-  LoginGoogleParams
+  LoginGoogleParams,
+  LoginFacebookParams
 } from './types'
 
-// ** Services
+// ** services
 import { loginAuth, loginAuthFacebook, loginAuthGoogle, logoutAuth } from 'src/services/auth'
 
 // ** Config
 import { API_ENDPOINT } from 'src/configs/api'
 
-// ** Helpers
+// ** helper
 import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
 
-// ** instance axios
+// instance axios
 import instanceAxios from 'src/helpers/axios'
-import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 // ** Redux
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-product'
 import { ROUTE_CONFIG } from 'src/configs/route'
+import { signOut } from 'next-auth/react'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -80,9 +81,8 @@ const AuthProvider = ({ children }: Props) => {
             setLoading(false)
             setUser({ ...response.data.data })
           })
-          .catch(() => {
+          .catch(e => {
             clearLocalUserData()
-
             setUser(null)
             setLoading(false)
             if (!router.pathname.includes('login')) {
@@ -95,11 +95,10 @@ const AuthProvider = ({ children }: Props) => {
     }
 
     initAuth()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    loginAuth({ email: params.email, password: params.password })
+    loginAuth({ email: params.email, password: params.password, deviceToken: params?.deviceToken })
       .then(async response => {
         if (params.rememberMe) {
           setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
@@ -112,6 +111,7 @@ const AuthProvider = ({ children }: Props) => {
         const returnUrl = router.query.returnUrl
         setUser({ ...response.data.user })
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+
         router.replace(redirectURL as string)
       })
 

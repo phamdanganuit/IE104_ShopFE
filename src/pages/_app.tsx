@@ -30,8 +30,7 @@ import { AxiosInterceptor } from 'src/helpers/axios'
 
 // ** Global css styles
 import 'src/styles/globals.scss'
-import "react-multi-carousel/lib/styles.css";
-
+import 'react-multi-carousel/lib/styles.css'
 
 // ** React Query
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -51,6 +50,7 @@ import { useSettings } from 'src/hooks/useSettings'
 import ThemeComponent from 'src/theme/ThemeComponent'
 import UserLayout from 'src/views/layouts/UserLayout'
 import NoGuard from 'src/components/auth/NoGuard'
+import { useTheme } from '@mui/material'
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -92,6 +92,8 @@ export default function App(props: ExtendedAppProps) {
   } = props
 
   const { settings } = useSettings()
+  const theme = useTheme()
+
 
   const [queryClient] = useState(() => new QueryClient())
 
@@ -111,13 +113,15 @@ export default function App(props: ExtendedAppProps) {
     success: {
       className: 'react-hot-toast',
       style: {
-        background: '#DDF6E8'
+        background: '#DDF6E8',
+        color: theme.palette.text.primary
       }
     },
     error: {
       className: 'react-hot-toast',
       style: {
-        background: '#FDE4D5'
+        background: '#FDE4D5',
+        color: theme.palette.text.primary
       }
     }
   }
