@@ -12,6 +12,8 @@ type TProps = {
 }
 
 const MoreButton = ({ memoOptionStatus, data }: TProps) => {
+  console.log('🚀 ~ MoreButton ~ data:', data)
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const dispatch: AppDispatch = useDispatch()
 

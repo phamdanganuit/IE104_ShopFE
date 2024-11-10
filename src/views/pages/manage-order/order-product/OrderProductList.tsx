@@ -114,7 +114,6 @@ const OrderProductListPage: NextPage<TProps> = () => {
     messageErrorDelete,
     typeError
   } = useSelector((state: RootState) => state.orderProduct)
-  console.log('🚀 ~ orderProducts:', orderProducts)
 
   // ** theme
   const theme = useTheme()
@@ -317,7 +316,6 @@ const OrderProductListPage: NextPage<TProps> = () => {
       align: 'left',
       renderCell: params => {
         const { row } = params
-        console.log('🚀 ~ row:', row)
 
         return (
           <>
