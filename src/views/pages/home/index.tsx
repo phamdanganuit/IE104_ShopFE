@@ -355,17 +355,20 @@ const HomePage: NextPage<TProps> = () => {
                   />
                 </Box>
               )} */}
+
+              <Box mt={6}>
+                <CustomPagination
+                  onChangePagination={handleOnchangePagination}
+                  pageSizeOptions={PAGE_SIZE_OPTION}
+                  pageSize={pageSize}
+                  page={page}
+                  rowLength={productsPublic.total}
+                  isHideShowed
+                />
+              </Box>
             </Grid>
           </Grid>
         </Box>
-        <CustomPagination
-          onChangePagination={handleOnchangePagination}
-          pageSizeOptions={PAGE_SIZE_OPTION}
-          pageSize={pageSize}
-          page={page}
-          rowLength={productsPublic.total}
-          isHideShowed
-        />
       </Box>
     </>
   )
