@@ -33,15 +33,15 @@ export default function Home(props: TProps) {
   return (
     <>
       <Head>
-        <title>Lập trình thật dễ - Danh sách sản phẩm</title>
+        <title>Louis Vuitton- Danh sách sản phẩm</title>
         <meta
           name='description'
-          content='Bán hàng điện tử, điện thoại, máy tính bảng, khóa học nextjs 14 reactjs typescript pro 2024 by Lập trình thật dễ - Xây dựng website bán hàng'
+          content='Bán hàng điện tử, điện thoại, máy tính bảng, khóa học nextjs 14 reactjs typescript pro 2024 by Chi Hieu - Xây dựng website bán hàng'
         />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
-        <meta name='keywords' content='ReactJS, NextJS 14, Typescript, Lập trình thật dễ' />
+        <meta name='keywords' content='ReactJS, NextJS 14, Typescript' />
       </Head>
-      <HomePage />
+      <HomePage products={products} totalCount={totalCount} paramsServer={params} productTypesServer={productTypes} />
     </>
   )
 }
@@ -49,7 +49,7 @@ export default function Home(props: TProps) {
 Home.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
 Home.guestGuard = false
 Home.authGuard = false
-Home.title = 'Danh sách sản phẩm của cửa hàng Lập trình thật dễ'
+Home.title = 'Danh sách sản phẩm của cửa hàng Louis Vuitton'
 
 export async function getServerSideProps() {
   const limit = 10
@@ -65,6 +65,7 @@ export async function getServerSideProps() {
         })
       }
     })
+
     const res = await getAllProductsPublic({
       params: { limit: limit, page: page, order, productType: productTypes?.[0]?.value }
     })

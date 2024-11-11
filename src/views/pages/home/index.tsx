@@ -38,8 +38,29 @@ import { OBJECT_TYPE_ERROR_PRODUCT } from 'src/configs/error'
 import CustomSelect from 'src/components/custom-select'
 import CardSkeleton from 'src/views/pages/product/components/CardSkeleton'
 import ChatBotAI from 'src/components/chat-bot-ai'
+import { useRouter } from 'next/router'
 
-type TProps = {}
+interface TOptions {
+  label: string
+  value: string
+}
+
+type TProps = {
+  products: TProduct[]
+  totalCount: number
+  productTypesServer: TOptions[]
+  paramsServer: {
+    limit: number
+    page: number
+    order: string
+    productType: string
+  }
+}
+
+interface TProductPublicState {
+  data: TProduct[]
+  total: number
+}
 
 const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
   '&.MuiTabs-root': {
@@ -47,9 +68,12 @@ const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
   }
 }))
 
-const HomePage: NextPage<TProps> = () => {
+const HomePage: NextPage<TProps> = props => {
   // ** Translate
   const { t } = useTranslation()
+
+  // ** Props
+  const { products, totalCount, paramsServer, productTypesServer } = props
 
   // State
   const [sortBy, setSortBy] = useState('createdAt desc')
@@ -61,6 +85,9 @@ const HomePage: NextPage<TProps> = () => {
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    if (!firstRender.current) {
+      firstRender.current = true
+    }
     setProductTypeSelected(newValue)
   }
 
@@ -69,12 +96,14 @@ const HomePage: NextPage<TProps> = () => {
   const [optionTypes, setOptionTypes] = useState<{ label: string; value: string }[]>([])
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
   const [loading, setLoading] = useState(false)
-  const [productsPublic, setProductsPublic] = useState({
+  const [productsPublic, setProductsPublic] = useState<TProductPublicState>({
     data: [],
     total: 0
   })
 
+  // ** Ref
   const firstRender = useRef<boolean>(false)
+  const isServerRendered = useRef<boolean>(false)
 
   // ** Redux
   const {
@@ -84,12 +113,14 @@ const HomePage: NextPage<TProps> = () => {
     typeError,
     isSuccessUnLike,
     messageErrorLike,
-    messageErrorUnLike
+    messageErrorUnLike,
+    isLoading
   } = useSelector((state: RootState) => state.product)
   const dispatch: AppDispatch = useDispatch()
 
   // ** theme
   const theme = useTheme()
+  const router = useRouter()
 
   // fetch api
   const handleGetListProducts = async () => {
@@ -111,16 +142,25 @@ const HomePage: NextPage<TProps> = () => {
   const handleOnchangePagination = (page: number, pageSize: number) => {
     setPage(page)
     setPageSize(pageSize)
+    if (!firstRender.current) {
+      firstRender.current = true
+    }
   }
 
   const handleFilterProduct = (value: string, type: string) => {
     switch (type) {
       case 'review': {
         setReviewSelected(value)
+        if (!firstRender.current) {
+          firstRender.current = true
+        }
         break
       }
       case 'location': {
         setLocationSelected(value)
+        if (!firstRender.current) {
+          firstRender.current = true
+        }
         break
       }
     }
@@ -165,19 +205,37 @@ const HomePage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    fetchAllTypes()
     fetchAllCities()
+    
+    // fetchAllTypes()
   }, [])
 
   useEffect(() => {
-    if (firstRender.current) {
+    if (!isServerRendered.current && paramsServer && !!productTypesServer.length) {
+      setPage(paramsServer.page)
+      setPageSize(paramsServer.limit)
+      setSortBy(paramsServer.order)
+      if (paramsServer.productType) {
+        setProductTypeSelected(paramsServer.productType)
+      }
+      setProductsPublic({
+        data: products,
+        total: totalCount
+      })
+      setOptionTypes(productTypesServer)
+      isServerRendered.current = true
+    }
+  }, [paramsServer, products, totalCount, productTypesServer])
+
+  useEffect(() => {
+    if (isServerRendered.current && firstRender.current) {
       handleGetListProducts()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, searchBy, page, pageSize, filterBy])
 
   useEffect(() => {
-    if (firstRender.current) {
+    if (isServerRendered.current && firstRender.current) {
       setFilterBy({ productType: productTypeSelected, minStar: reviewSelected, productLocation: locationSelected })
     }
   }, [productTypeSelected, reviewSelected, locationSelected])
@@ -232,7 +290,7 @@ const HomePage: NextPage<TProps> = () => {
           })}
         </StyledTabs>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-          <Box sx={{ display: 'flex', gap: '14px' }}>
+          <Box sx={{ display: 'flex', gap: '20px' }}>
             <Box sx={{ width: '300px' }}>
               <CustomSelect
                 fullWidth
@@ -254,7 +312,7 @@ const HomePage: NextPage<TProps> = () => {
                   },
                   {
                     label: t('Sort_high_view'),
-                    value: 'view desc'
+                    value: 'views desc'
                   },
                   {
                     label: t('Sort_high_like'),
@@ -268,7 +326,12 @@ const HomePage: NextPage<TProps> = () => {
               <InputSearch
                 placeholder={t('Search_name_product')}
                 value={searchBy}
-                onChange={(value: string) => setSearchBy(value)}
+                onChange={(value: string) => {
+                  if (!firstRender.current) {
+                    firstRender.current = true
+                  }
+                  setSearchBy(value)
+                }}
               />
             </Box>
           </Box>
@@ -342,8 +405,7 @@ const HomePage: NextPage<TProps> = () => {
                   )}
                 </Grid>
               )}
-
-              {/* {totalCount && (
+              {totalCount && (
                 <Box mt={6}>
                   <CustomPagination
                     onChangePagination={handleOnchangePagination}
@@ -354,18 +416,7 @@ const HomePage: NextPage<TProps> = () => {
                     isHideShowed
                   />
                 </Box>
-              )} */}
-
-              <Box mt={6}>
-                <CustomPagination
-                  onChangePagination={handleOnchangePagination}
-                  pageSizeOptions={PAGE_SIZE_OPTION}
-                  pageSize={pageSize}
-                  page={page}
-                  rowLength={productsPublic.total}
-                  isHideShowed
-                />
-              </Box>
+              )}
             </Grid>
           </Grid>
         </Box>
