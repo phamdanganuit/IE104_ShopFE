@@ -15,14 +15,18 @@ import Icon from 'src/components/Icon'
 import Spinner from 'src/components/spinner'
 import CardRelatedProduct from 'src/views/pages/product/components/CardRelatedProduct'
 import NoData from 'src/components/no-data'
+import CardSkeletonRelated from 'src/views/pages/product/components/CardSkeletonRelated'
 import CustomCarousel from 'src/components/custom-carousel'
+import CommentInput from 'src/views/pages/product/components/CommentInput'
+import CommentItem from 'src/views/pages/product/components/CommentItem'
+import CardReview from 'src/views/pages/product/components/CardReview'
 
 // ** Translate
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
 
 // ** Utils
-import { cloneDeep, convertUpdateProductToCart, formatFilter, formatNumberToLocal, isExpiry } from 'src/utils'
+import { convertUpdateProductToCart, formatNumberToLocal, isExpiry, formatFilter, cloneDeep } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
@@ -36,7 +40,8 @@ import { resetInitialState as resetInitialStateComment } from 'src/stores/commen
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Services
-import { getDetailsProductPublicBySlug, getListRelatedProductBySlug } from 'src/services/product'
+import { getAllReviews } from 'src/services/reviewProduct'
+import { getAllCommentsPublic } from 'src/services/commentProduct'
 
 // ** Other
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
@@ -46,23 +51,24 @@ import { TProduct } from 'src/types/product'
 
 // ** Configs
 import { ROUTE_CONFIG } from 'src/configs/route'
-import { getAllReviews } from 'src/services/reviewProduct'
-import { TReviewItem } from 'src/types/reviews'
-import CardReview from 'src/views/pages/product/components/CardReview'
-import CardSkeletonRelated from 'src/views/pages/product/components/CardSkeletonRelated'
-import { getAllCommentsPublic } from 'src/services/commentProduct'
-import { TCommentItemProduct } from 'src/types/comment'
-import CommentItem from 'src/views/pages/product/components/CommentItem'
-import { createCommentAsync } from 'src/stores/comments/actions'
-import { ACTION_SOCKET_COMMENT } from 'src/configs/socketIo'
 import connectSocketIO from 'src/helpers/socket'
+import { ACTION_SOCKET_COMMENT } from 'src/configs/socketIo'
+
+// ** Types
+import { TReviewItem } from 'src/types/reviews'
 import toast from 'react-hot-toast'
 import { OBJECT_TYPE_ERROR_REVIEW } from 'src/configs/error'
-import CommentInput from 'src/views/pages/product/components/CommentInput'
 
-type TProps = {}
+import { TCommentItemProduct } from 'src/types/comment'
+import { createCommentAsync } from 'src/stores/comments/actions'
+import { getDetailsProductPublicBySlug, getListRelatedProductBySlug } from 'src/services/product'
 
-const DetailsProductPage: NextPage<TProps> = () => {
+type TProps = {
+  productData: TProduct
+  productsRelated: TProduct[]
+}
+
+const DetailsProductPage: NextPage<TProps> = ({ productData, productsRelated }) => {
   // State
   const [loading, setLoading] = useState(false)
   const [dataProduct, setDataProduct] = useState<TProduct | any>({})
@@ -78,7 +84,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
   // ** Hooks
   const { i18n } = useTranslation()
   const router = useRouter()
-  const productId = router.query?.productId as string
+  const slug = router.query?.productId as string
   const { user } = useAuth()
 
   // ** theme
@@ -185,7 +191,6 @@ const DetailsProductPage: NextPage<TProps> = () => {
           })
         }
       })
-
       .catch(() => {
         setLoading(false)
       })
@@ -337,7 +342,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
       })
     })
 
-    socket.on(ACTION_SOCKET_COMMENT.REPLY_COMMENT, (data) => {
+    socket.on(ACTION_SOCKET_COMMENT.REPLY_COMMENT, data => {
       const parentId = data.parent
       const findParent = cloneListComment?.data?.find((item: TCommentItemProduct) => item?._id === parentId)
       if (findParent) {
@@ -383,18 +388,23 @@ const DetailsProductPage: NextPage<TProps> = () => {
   }, [listComment])
 
   useEffect(() => {
+    if (productData?._id) {
+      setDataProduct(productData)
+    }
+  }, [productData])
+
+  useEffect(() => {
+    if (productsRelated.length > 0) {
+      setRelatedProduct(productsRelated)
+    }
+  }, [productsRelated])
+
+  useEffect(() => {
     if (dataProduct._id) {
       fetchListCommentProduct(dataProduct._id)
       fetchGetAllListReviewByProduct(dataProduct._id)
     }
   }, [dataProduct._id])
-
-  useEffect(() => {
-    if (productId) {
-      fetchGetDetailsProduct(productId)
-      fetchListRelatedProduct(productId)
-    }
-  }, [productId])
 
   const memoIsExpiry = useMemo(() => {
     return isExpiry(dataProduct.discountStartDate, dataProduct.discountEndDate)

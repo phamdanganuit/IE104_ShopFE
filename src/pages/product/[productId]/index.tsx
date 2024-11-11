@@ -21,24 +21,24 @@ const Index: NextPage<TProps> = ({ productData, listRelatedProduct }) => {
   return (
     <>
       <Head>
-        <title>{`Lập trình thật dễ - ${productData?.name}`}</title>
+        <title>{`Louis Vuitton - ${productData?.name}`}</title>
         <meta name='description' content={description} />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
-        <meta name='author' content='Lập trình thật dễ' />
-        <meta name='name' content='Khóa học NextJS 14 typescript PRO 2024' />
+        <meta name='author' content='Louis Vuitton' />
+        <meta name='name' content='NextJS 14 typescript' />
         <meta name='image' content={productData.image} />
         {/* facebook */}
         <meta property='og:type' content='website' />
-        <meta property='og:title' content={`Lập trình thật dễ - ${productData?.name}`} />
+        <meta property='og:title' content={`Louis Vuitton - ${productData?.name}`} />
         <meta property='og:description' content={description} />
         <meta property='og:image' content={productData.image} />
         {/* twitter */}
         <meta property='twitter:card' content='website' />
-        <meta property='twitter:title' content={`Lập trình thật dễ - ${productData?.name}`} />
+        <meta property='twitter:title' content={`Louis Vuitton - ${productData?.name}`} />
         <meta property='twitter:description' content={productData.description} />
-        <meta property='twitter:image' content={`Lập trình thật dễ - ${productData?.name}`} />
+        <meta property='twitter:image' content={`Louis Vuitton - ${productData?.name}`} />
       </Head>
-      <DetailsProductPage />
+      <DetailsProductPage productData={productData} productsRelated={listRelatedProduct} />
     </>
   )
 }
