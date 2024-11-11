@@ -33,7 +33,7 @@ export default function Home(props: TProps) {
   return (
     <>
       <Head>
-        <title>Louis Vuitton- Danh sách sản phẩm</title>
+        <title>Gearvn- Danh sách sản phẩm</title>
         <meta
           name='description'
           content='Bán hàng điện tử, điện thoại, máy tính bảng, khóa học nextjs 14 reactjs typescript pro 2024 by Chi Hieu - Xây dựng website bán hàng'
@@ -49,7 +49,7 @@ export default function Home(props: TProps) {
 Home.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
 Home.guestGuard = false
 Home.authGuard = false
-Home.title = 'Danh sách sản phẩm của cửa hàng Louis Vuitton'
+Home.title = 'Danh sách sản phẩm của cửa hàng Gearvn'
 
 export async function getServerSideProps() {
   const limit = 10

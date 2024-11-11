@@ -21,22 +21,22 @@ const Index: NextPage<TProps> = ({ productData, listRelatedProduct }) => {
   return (
     <>
       <Head>
-        <title>{`Louis Vuitton - ${productData?.name}`}</title>
+        <title>{`Gearvn - ${productData?.name}`}</title>
         <meta name='description' content={description} />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
-        <meta name='author' content='Louis Vuitton' />
+        <meta name='author' content='Gearvn' />
         <meta name='name' content='NextJS 14 typescript' />
         <meta name='image' content={productData.image} />
         {/* facebook */}
         <meta property='og:type' content='website' />
-        <meta property='og:title' content={`Louis Vuitton - ${productData?.name}`} />
+        <meta property='og:title' content={`Gearvn - ${productData?.name}`} />
         <meta property='og:description' content={description} />
         <meta property='og:image' content={productData.image} />
         {/* twitter */}
         <meta property='twitter:card' content='website' />
-        <meta property='twitter:title' content={`Louis Vuitton - ${productData?.name}`} />
+        <meta property='twitter:title' content={`Gearvn - ${productData?.name}`} />
         <meta property='twitter:description' content={productData.description} />
-        <meta property='twitter:image' content={`Louis Vuitton - ${productData?.name}`} />
+        <meta property='twitter:image' content={`Gearvn - ${productData?.name}`} />
       </Head>
       <DetailsProductPage productData={productData} productsRelated={listRelatedProduct} />
     </>

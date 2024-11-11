@@ -3,7 +3,7 @@ import { ReactNode, useState } from 'react'
 
 // ** Next Imports
 import Head from 'next/head'
-import { Router } from 'next/router'
+import { Router, useRouter } from 'next/router'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
@@ -93,7 +93,8 @@ export default function App(props: ExtendedAppProps) {
 
   const { settings } = useSettings()
   const theme = useTheme()
-
+  const router = useRouter()
+  const slugProduct = (router?.query?.productId as string)?.replaceAll('-', ' ')
 
   const [queryClient] = useState(() => new QueryClient())
 
@@ -108,6 +109,17 @@ export default function App(props: ExtendedAppProps) {
 
   const aclAbilities = Component.acl ?? defaultACLObj
   const permission = Component.permission ?? []
+
+  const title = slugProduct
+    ? `${themeConfig.templateName} - ${slugProduct}`
+    : (Component.title ?? `${themeConfig.templateName}`)
+
+  const keywords =
+    Component.keywords ??
+    'Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.'
+
+  const description = Component.description ?? `${themeConfig.templateName} – Nextjs 14 với dự án website bán hàng`
+  const urlImage = Component.urlImage ?? '/logo.png'
 
   const toastOptions = {
     success: {
@@ -129,13 +141,23 @@ export default function App(props: ExtendedAppProps) {
   return (
     <Provider store={store}>
       <Head>
-        <title>{`${themeConfig.templateName} - Material Design React Admin Template`}</title>
-        <meta
-          name='description'
-          content={`${themeConfig.templateName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
-        />
-        <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+        <title>{title}</title>
+        <meta name='description' content={description} />
+        <meta name='keywords' content={keywords} />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
+        <meta name='author' content='Van Chi Hieu' />
+        <meta name='name' content='NextJS 14 typescript 2024' />
+        <meta name='image' content={urlImage} />
+        {/* facebook */}
+        <meta property='og:type' content='website' />
+        <meta property='og:title' content={title} />
+        <meta property='og:description' content={description} />
+        <meta property='og:image' content={urlImage} />
+        {/* twitter */}
+        <meta property='twitter:card' content='website' />
+        <meta property='twitter:title' content={title} />
+        <meta property='twitter:description' content={description} />
+        <meta property='twitter:image' content={urlImage} />
       </Head>
 
       <QueryClientProvider client={queryClient}>
