@@ -100,7 +100,7 @@ const RoleListPage: NextPage<TProps> = () => {
       select: data => data?.roles,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
-      staleTime: 10000
+      staleTime: 10000 // thời gian mà dữ liệu được coi là còn mới, sau thời gian này thì dữ liệu sẽ được fetch lại
     }
   )
 

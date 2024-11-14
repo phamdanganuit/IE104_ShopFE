@@ -62,7 +62,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
       queryClient.setQueryData([queryKeys.role_list, sortBy, searchBy, -1, -1], (oldData: any) => {
 
         return { ...oldData, roles: [...oldData.roles, newRole] }
-      })
+      }) // thay vì refetchQueries thì update data trên cache dùng setQueryData
       onClose()
       toast.success(t('Create_role_success'))
     },
@@ -141,12 +141,12 @@ const CreateEditRole = (props: TCreateEditRole) => {
       // refetchOnReconnect: false,
       staleTime: 5000,
       gcTime: 10000,
-      enabled: !!idRole,
+      enabled: !!idRole, // chỉ fetch khi có idRole
       placeholderData: () => {
         const roles = (queryClient.getQueryData([queryKeys.role_list, sortBy, searchBy]) as any)?.roles
 
         return roles?.find((item: { _id: string }) => item._id === idRole)
-      },
+      }, // dùng cache để placeholder cho lần fetch đầu tiên
     },
   )
 
