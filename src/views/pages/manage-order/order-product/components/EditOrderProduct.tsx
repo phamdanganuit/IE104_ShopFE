@@ -8,16 +8,7 @@ import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
 // ** Mui
-import {
-  Box,
-  Button,
-  FormHelperText,
-  Grid,
-  IconButton,
-  InputLabel,
-  Typography,
-  useTheme
-} from '@mui/material'
+import { Box, Button, FormHelperText, Grid, IconButton, InputLabel, Typography, useTheme } from '@mui/material'
 
 // ** Component
 import Icon from 'src/components/Icon'
@@ -49,6 +40,9 @@ type TDefaultValue = {
   address: string
   city: string
   phone: ''
+  name: string
+  price: number
+  amount: number
 }
 
 const EditOrderProduct = (props: TCreateEditProduct) => {
@@ -70,21 +64,27 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
     fullName: yup.string().required(t('Required_field')),
     phone: yup.string().required(t('Required_field')),
     address: yup.string().required(t('Required_field')),
-    city: yup.string().required(t('Required_field'))
+    city: yup.string().required(t('Required_field')),
+    name: yup.string().required(t('Required_field')),
+    price: yup.number().required(t('Required_field')),
+    amount: yup.number().required(t('Required_field'))
   })
 
   const defaultValues: TDefaultValue = {
     fullName: '',
     address: '',
     city: '',
-    phone: ''
+    phone: '',
+    name: '',
+    price: 0,
+    amount: 0
   }
 
   const {
     handleSubmit,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues,
     mode: 'onBlur',
@@ -104,7 +104,15 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
               phone: data.phone,
               address: data.address,
               city: data.city
-            }
+            },
+            
+            // orderItems: [
+            //   {
+            //     name: data.name,
+            //     price: data.price,
+            //     amount: data.amount
+            //   }
+            // ]
           })
         )
       }
@@ -117,16 +125,22 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
     await getDetailsOrderProduct(id)
       .then(res => {
         const data = res.data
+        console.log('🚀 ~ fetchDetailsOrderProduct ~ data:', data)
         if (data) {
           reset({
             fullName: data?.shippingAddress?.fullName,
             phone: data?.shippingAddress?.phone,
             city: data?.shippingAddress?.city,
-            address: data?.shippingAddress?.address
+            address: data?.shippingAddress?.address,
+            name: data?.orderItems[0]?.name,
+            price: data?.orderItems[0]?.price,
+            amount: data?.orderItems[0]?.amount
           })
+          console.log('🚀 ~ fetchDetailsOrderProduct ~ name:', name)
         }
         setLoading(false)
       })
+
       .catch(e => {
         setLoading(false)
       })
@@ -213,6 +227,63 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
                             />
                           )}
                           name='fullName'
+                        />
+                      </Grid>
+                      <Grid item md={12} xs={12}>
+                        <Controller
+                          control={control}
+                          render={({ field: { onChange, onBlur, value } }) => (
+                            <CustomTextField
+                              required
+                              fullWidth
+                              label={t('Name_product')}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              value={value}
+                              placeholder={t('Enter_name_product')}
+                              error={Boolean(errors?.name)}
+                              helperText={errors?.name?.message}
+                            />
+                          )}
+                          name='name'
+                        />
+                      </Grid>
+                      <Grid item md={12} xs={12}>
+                        <Controller
+                          control={control}
+                          render={({ field: { onChange, onBlur, value } }) => (
+                            <CustomTextField
+                              required
+                              fullWidth
+                              label={t('Price')}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              value={value}
+                              placeholder={t('Enter_price')}
+                              error={Boolean(errors?.price)}
+                              helperText={errors?.price?.message}
+                            />
+                          )}
+                          name='price'
+                        />
+                      </Grid>
+                      <Grid item md={12} xs={12}>
+                        <Controller
+                          control={control}
+                          render={({ field: { onChange, onBlur, value } }) => (
+                            <CustomTextField
+                              required
+                              fullWidth
+                              label={t('Amount')}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              value={value}
+                              placeholder={t('Enter_amount')}
+                              error={Boolean(errors?.amount)}
+                              helperText={errors?.amount?.message}
+                            />
+                          )}
+                          name='amount'
                         />
                       </Grid>
                       <Grid item md={12} xs={12}>

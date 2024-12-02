@@ -412,7 +412,7 @@ const MyOrderPage: NextPage<TProps> = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Icon icon='carbon:delivery'></Icon>
             <Typography>
-              {!!dataOrder.isDelivered ? (
+              {!!dataOrder?.isDelivered ? (
                 <>
                   <span style={{ color: theme.palette.success.main, fontSize: '16px' }}>
                     {t('Order_has_been_delivery')}
@@ -432,7 +432,7 @@ const MyOrderPage: NextPage<TProps> = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Icon icon='carbon:delivery'></Icon>
             <Typography>
-              {!!dataOrder.isPaid ? (
+              {!!dataOrder?.isPaid ? (
                 <>
                   <span style={{ color: theme.palette.success.main, fontSize: '16px' }}>
                     {t('Order_has_been_paid')}
@@ -452,7 +452,7 @@ const MyOrderPage: NextPage<TProps> = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mt: 6, justifyContent: 'flex-end' }}>
-          {[0].includes(dataOrder.status) && dataOrder.paymentMethod.type !== PAYMENT_DATA.PAYMENT_LATER.value && (
+          {[0].includes(dataOrder?.status) && dataOrder.paymentMethod.type !== PAYMENT_DATA.PAYMENT_LATER.value && (
             <Button
               variant='outlined'
               onClick={() => handlePaymentTypeOrder(dataOrder.paymentMethod.type)}
