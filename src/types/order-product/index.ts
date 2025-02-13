@@ -49,12 +49,14 @@ export type TParamsEditOrderProduct = {
     phone: string
     city: string
   }
-  orderItems: {
-    name: any
-    price: any
-    amount: any
-  }[]
   id: string
+  orderItems: [
+    {
+      name: string
+      price: number
+      amount: number
+    }
+  ]
 }
 
 export type TParamsGetOrderProducts = {

@@ -105,14 +105,13 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
               address: data.address,
               city: data.city
             },
-            
-            // orderItems: [
-            //   {
-            //     name: data.name,
-            //     price: data.price,
-            //     amount: data.amount
-            //   }
-            // ]
+            orderItems: [
+              {
+                name: data.name,
+                price: data.price,
+                amount: data.amount
+              }
+            ]
           })
         )
       }

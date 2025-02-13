@@ -13,7 +13,7 @@ const PaymentVNPay = () => {
   const theme = useTheme()
   const router = useRouter()
   const { vnp_SecureHash, vnp_ResponseCode, vnp_TxnRef, ...rests } = router.query
-  
+
   // ** State
   const [dataPayment, setDataPayment] = useState({
     status: '',

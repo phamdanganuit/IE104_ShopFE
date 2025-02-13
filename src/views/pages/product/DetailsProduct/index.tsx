@@ -73,6 +73,7 @@ const DetailsProductPage: NextPage<TProps> = ({ productData, productsRelated }) 
   const [loading, setLoading] = useState(false)
   const [dataProduct, setDataProduct] = useState<TProduct | any>({})
   const [listRelatedProduct, setRelatedProduct] = useState<TProduct[]>([])
+
   const [listReviews, setListReview] = useState<TReviewItem[]>([])
   const [listComment, setListComment] = useState<{ data: TCommentItemProduct[]; total: number }>({
     data: [],
@@ -394,7 +395,7 @@ const DetailsProductPage: NextPage<TProps> = ({ productData, productsRelated }) 
   }, [productData])
 
   useEffect(() => {
-    if (productsRelated.length > 0) {
+    if (productsRelated?.length > 0) {
       setRelatedProduct(productsRelated)
     }
   }, [productsRelated])
@@ -403,6 +404,7 @@ const DetailsProductPage: NextPage<TProps> = ({ productData, productsRelated }) 
     if (dataProduct._id) {
       fetchListCommentProduct(dataProduct._id)
       fetchGetAllListReviewByProduct(dataProduct._id)
+      fetchListRelatedProduct(dataProduct.slug)
     }
   }, [dataProduct._id])
 

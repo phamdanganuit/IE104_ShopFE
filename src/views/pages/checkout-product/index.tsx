@@ -217,6 +217,8 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     setLoading(true)
     await getAllPaymentTypes({ params: { limit: -1, page: -1 } })
       .then(res => {
+        console.log(res)
+
         if (res.data) {
           setOptionPayments(
             res?.data?.paymentTypes?.map((item: { name: string; _id: string; type: string }) => ({
@@ -331,7 +333,18 @@ const CheckoutProductPage: NextPage<TProps> = () => {
         confirmButtonText: t('Confirm'),
         background: theme.palette.background.paper,
         color: `rgba(${theme.palette.customColors.main}, 0.78)`
+
+        // title: t('Congraturation!'),
+        // text: t('Order_product_success'),
+        // icon: 'success',
+        // confirmButtonText: t('Confirm'),
+        // background: theme.palette.background.paper,
+        // color: `rgba(${theme.palette.customColors.main}, 0.78)`
       })
+
+      // .then(() => {
+        // router.push(ROUTE_CONFIG.MY_ORDER)
+      // })
       dispatch(resetInitialState())
     }
   }, [isSuccessCreate, isErrorCreate, messageErrorCreate])
