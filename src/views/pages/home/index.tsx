@@ -195,6 +195,8 @@ const HomePage: NextPage<TProps> = props => {
       .then(res => {
         const data = res?.data.cities
         if (data) {
+          console.log('🚀 ~ fetchAllCities ~ data:', data)
+
           setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
         }
         setLoading(false)
@@ -206,7 +208,7 @@ const HomePage: NextPage<TProps> = props => {
 
   useEffect(() => {
     fetchAllCities()
-    
+
     // fetchAllTypes()
   }, [])
 
