@@ -185,8 +185,8 @@ const ReviewListPage: NextPage<TProps> = () => {
 
         return (
           <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-            <Tooltip title={row.product.name}>
-              <span>{row?.product?.name}</span>
+            <Tooltip title={row?.product?.name || ''}>
+              <span>{row?.product?.name || 'N/A'}</span>
             </Tooltip>
           </Typography>
         )
