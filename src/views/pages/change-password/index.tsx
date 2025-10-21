@@ -124,50 +124,134 @@ const ChangePasswordPage: NextPage<TProps> = () => {
       {isLoading && <FallbackSpinner />}
       <Box
         sx={{
-          backgroundColor: theme.palette.background.paper,
+          minHeight: '100vh',
+          width: '100%',
+          background: `linear-gradient(135deg, ${theme.palette.info.main} 0%, ${theme.palette.primary.main} 50%, ${theme.palette.primary.dark} 100%)`,
           display: 'flex',
           alignItems: 'center',
-          padding: '40px'
+          justifyContent: 'center',
+          padding: { xs: '20px', md: '40px' },
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: '-40%',
+            right: '-15%',
+            width: '600px',
+            height: '600px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.1)',
+            filter: 'blur(70px)'
+          },
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: '-35%',
+            left: '-15%',
+            width: '500px',
+            height: '500px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.08)',
+            filter: 'blur(60px)'
+          }
         }}
       >
         <Box
-          display={{
-            xs: 'none',
-            sm: 'flex'
-          }}
           sx={{
+            display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: theme.shape.borderRadius,
-            backgroundColor: theme.palette.customColors.bodyBg,
-            height: '100%',
-            minWidth: '50vw'
+            width: '100%',
+            maxWidth: '1200px',
+            gap: 4,
+            position: 'relative',
+            zIndex: 1
           }}
         >
-          <Image
-            src={theme.palette.mode === 'light' ? RegisterLight : RegisterDark}
-            alt='login image'
-            style={{
-              height: 'auto',
-              width: 'auto'
-            }}
-          />
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-          <CssBaseline />
           <Box
+            display={{
+              xs: 'none',
+              md: 'flex'
+            }}
             sx={{
-              marginTop: 8,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '24px',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              minWidth: '500px',
+              padding: '40px',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
             }}
           >
-            <Typography component='h1' variant='h5'>
-              {t('Change_password')}
-            </Typography>
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
-              <Box sx={{ mt: 2, width: '300px' }}>
+            <Image
+              src={theme.palette.mode === 'light' ? RegisterLight : RegisterDark}
+              alt='change password image'
+              style={{
+                height: 'auto',
+                width: 'auto',
+                maxWidth: '100%'
+              }}
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+            <CssBaseline />
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '24px',
+                padding: { xs: '32px 24px', md: '48px 40px' },
+                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                width: { xs: '100%', sm: '450px' },
+                maxWidth: '500px',
+                transition: 'transform 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-5px)',
+                  boxShadow: '0 25px 70px rgba(0, 0, 0, 0.35)'
+                }
+              }}
+            >
+              <Box
+                sx={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '16px',
+                  background: `linear-gradient(135deg, ${theme.palette.info.main}, ${theme.palette.primary.main})`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: 2,
+                  boxShadow: `0 8px 24px ${theme.palette.primary.main}40`
+                }}
+              >
+                <Icon icon='solar:key-bold-duotone' fontSize={36} style={{ color: '#fff' }} />
+              </Box>
+              <Typography 
+                component='h1' 
+                variant='h4' 
+                sx={{ 
+                  fontWeight: 700, 
+                  mb: 1,
+                  background: `linear-gradient(135deg, ${theme.palette.info.main}, ${theme.palette.primary.main})`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                {t('Change_password')}
+              </Typography>
+              <Typography variant='body2' sx={{ mb: 3, color: theme.palette.text.secondary, textAlign: 'center' }}>
+                Create a new secure password for your account
+              </Typography>
+            <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate style={{ width: '100%' }}>
+              <Box sx={{ mt: 2, width: '100%' }}>
                 <Controller
                   control={control}
                   rules={{
@@ -185,6 +269,19 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                       error={Boolean(errors?.currentPassword)}
                       helperText={errors?.currentPassword?.message}
                       type={showCurrentPassword ? 'text' : 'password'}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '12px',
+                          backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: 'white'
+                          }
+                        }
+                      }}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position='end'>
@@ -204,7 +301,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                 />
               </Box>
 
-              <Box sx={{ mt: 2, width: '300px' }}>
+              <Box sx={{ mt: 2, width: '100%' }}>
                 <Controller
                   control={control}
                   rules={{
@@ -222,6 +319,19 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                       error={Boolean(errors?.newPassword)}
                       helperText={errors?.newPassword?.message}
                       type={showNewPassword ? 'text' : 'password'}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '12px',
+                          backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: 'white'
+                          }
+                        }
+                      }}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position='end'>
@@ -241,7 +351,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                 />
               </Box>
 
-              <Box sx={{ mt: 2, width: '300px' }}>
+              <Box sx={{ mt: 2, width: '100%' }}>
                 <Controller
                   control={control}
                   rules={{
@@ -259,6 +369,19 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                       error={Boolean(errors?.confirmNewPassword)}
                       helperText={errors?.confirmNewPassword?.message}
                       type={showConfirmNewPassword ? 'text' : 'password'}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '12px',
+                          backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: 'white'
+                          }
+                        }
+                      }}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position='end'>
@@ -278,13 +401,34 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                 />
               </Box>
 
-              <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                {t('Change')}
+              <Button 
+                type='submit' 
+                fullWidth 
+                variant='contained' 
+                sx={{ 
+                  mt: 3, 
+                  mb: 2,
+                  height: '48px',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  background: `linear-gradient(135deg, ${theme.palette.info.main}, ${theme.palette.primary.main})`,
+                  boxShadow: `0 8px 24px ${theme.palette.primary.main}40`,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: `0 12px 32px ${theme.palette.primary.main}60`
+                  }
+                }}
+              >
+                {t('Change_password')}
               </Button>
             </form>
           </Box>
         </Box>
       </Box>
+    </Box>
     </>
   )
 }

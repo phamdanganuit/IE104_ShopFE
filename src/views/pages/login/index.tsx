@@ -155,24 +155,54 @@ const LoginPage: NextPage<TProps> = () => {
         sx={{
           height: '100vh',
           width: '100vw',
-          backgroundColor: theme.palette.background.paper,
+          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 50%, ${theme.palette.secondary.main} 100%)`,
           display: 'flex',
           alignItems: 'center',
-          padding: '40px'
+          padding: { xs: '20px', md: '40px' },
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: '-50%',
+            right: '-10%',
+            width: '500px',
+            height: '500px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.1)',
+            filter: 'blur(60px)'
+          },
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: '-30%',
+            left: '-10%',
+            width: '400px',
+            height: '400px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.08)',
+            filter: 'blur(50px)'
+          }
         }}
       >
         <Box
           display={{
             xs: 'none',
-            sm: 'flex'
+            md: 'flex'
           }}
           sx={{
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: theme.shape.borderRadius,
-            backgroundColor: theme.palette.customColors.bodyBg,
+            borderRadius: '24px',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
             height: '100%',
-            minWidth: '50vw'
+            minWidth: '50vw',
+            padding: '40px',
+            position: 'relative',
+            zIndex: 1,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
           }}
         >
           <Image
@@ -180,25 +210,67 @@ const LoginPage: NextPage<TProps> = () => {
             alt='login image'
             style={{
               height: 'auto',
-              width: 'auto'
+              width: 'auto',
+              maxWidth: '100%'
             }}
           />
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, position: 'relative', zIndex: 1 }}>
           <CssBaseline />
           <Box
             sx={{
-              marginTop: 8,
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center'
+              alignItems: 'center',
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '24px',
+              padding: { xs: '32px 24px', md: '48px 40px' },
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              width: { xs: '100%', sm: '450px' },
+              maxWidth: '500px',
+              transition: 'transform 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-5px)',
+                boxShadow: '0 25px 70px rgba(0, 0, 0, 0.35)'
+              }
             }}
           >
-            <Typography component='h1' variant='h5'>
+            <Box
+              sx={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '16px',
+                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mb: 2,
+                boxShadow: `0 8px 24px ${theme.palette.primary.main}40`
+              }}
+            >
+              <Icon icon='solar:lock-password-bold-duotone' fontSize={36} style={{ color: '#fff' }} />
+            </Box>
+            <Typography 
+              component='h1' 
+              variant='h4' 
+              sx={{ 
+                fontWeight: 700, 
+                mb: 1,
+                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
               {t('Login')}
             </Typography>
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
-              <Box sx={{ mt: 2, width: '300px' }}>
+            <Typography variant='body2' sx={{ mb: 3, color: theme.palette.text.secondary, textAlign: 'center' }}>
+              Welcome back! Please enter your details
+            </Typography>
+            <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate style={{ width: '100%' }}>
+              <Box sx={{ mt: 2, width: '100%' }}>
                 <Controller
                   control={control}
                   rules={{
@@ -215,13 +287,26 @@ const LoginPage: NextPage<TProps> = () => {
                       placeholder={t('Enter_email')}
                       error={Boolean(errors?.email)}
                       helperText={errors?.email?.message}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '12px',
+                          backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: 'white'
+                          }
+                        }
+                      }}
                     />
                   )}
                   name='email'
                 />
               </Box>
 
-              <Box sx={{ mt: 2, width: '300px' }}>
+              <Box sx={{ mt: 2, width: '100%' }}>
                 <Controller
                   control={control}
                   rules={{
@@ -239,6 +324,19 @@ const LoginPage: NextPage<TProps> = () => {
                       error={Boolean(errors?.password)}
                       helperText={errors?.password?.message}
                       type={showPassword ? 'text' : 'password'}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '12px',
+                          backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: 'white'
+                          }
+                        }
+                      }}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position='end'>
@@ -268,36 +366,104 @@ const LoginPage: NextPage<TProps> = () => {
                         setIsRemember(e.target.checked)
                         setLocalRememberLoginAuthSocial(JSON.stringify(e.target.checked))
                       }}
-                      color='primary'
+                      sx={{
+                        color: theme.palette.primary.main,
+                        '&.Mui-checked': {
+                          color: theme.palette.primary.main
+                        }
+                      }}
                     />
                   }
-                  label={t('Remember_me')}
+                  label={<Typography variant='body2'>{t('Remember_me')}</Typography>}
                 />
-                <Typography variant='body2' component={Link} href={`${ROUTE_CONFIG.FORGOT_PASSWORD}`}>
+                <Typography 
+                  variant='body2' 
+                  component={Link} 
+                  href={`${ROUTE_CONFIG.FORGOT_PASSWORD}`}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    transition: 'all 0.2s',
+                    '&:hover': {
+                      textDecoration: 'underline',
+                      color: theme.palette.primary.dark
+                    }
+                  }}
+                >
                   {t('Forgot_password')}?
                 </Typography>
               </Box>
-              <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                Sign In
+              <Button 
+                type='submit' 
+                fullWidth 
+                variant='contained' 
+                sx={{ 
+                  mt: 3, 
+                  mb: 2,
+                  height: '48px',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                  boxShadow: `0 8px 24px ${theme.palette.primary.main}40`,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: `0 12px 32px ${theme.palette.primary.main}60`
+                  }
+                }}
+              >
+                {t('Login')}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                <Typography>{t('You_have_account')}</Typography>
+                <Typography variant='body2' sx={{ color: theme.palette.text.secondary }}>
+                  {t('You_have_account')}
+                </Typography>
                 <Link
                   style={{
-                    color: theme.palette.primary.main
+                    color: theme.palette.primary.main,
+                    fontWeight: 600,
+                    textDecoration: 'none'
                   }}
                   href={`${ROUTE_CONFIG.REGISTER}`}
                 >
                   {t('Register')}
                 </Link>
               </Box>
-              <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>{t('Or')}</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                <IconButton sx={{ color: '#497ce2' }} onClick={handleLoginFacebook}>
+              
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, my: 3 }}>
+                <Box sx={{ flex: 1, height: '1px', backgroundColor: 'divider' }} />
+                <Typography variant='body2' sx={{ color: theme.palette.text.secondary, fontWeight: 500 }}>
+                  {t('Or')}
+                </Typography>
+                <Box sx={{ flex: 1, height: '1px', backgroundColor: 'divider' }} />
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                <IconButton 
+                  onClick={handleLoginFacebook}
+                  sx={{ 
+                    width: '56px',
+                    height: '56px',
+                    border: '2px solid',
+                    borderColor: 'divider',
+                    borderRadius: '12px',
+                    color: '#497ce2',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      borderColor: '#497ce2',
+                      backgroundColor: 'rgba(73, 124, 226, 0.08)',
+                      transform: 'translateY(-3px)',
+                      boxShadow: '0 8px 16px rgba(73, 124, 226, 0.25)'
+                    }
+                  }}
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     role='img'
-                    fontSize='1.375rem'
+                    fontSize='1.75rem'
                     className='iconify iconify--mdi'
                     width='1em'
                     height='1em'
@@ -309,11 +475,28 @@ const LoginPage: NextPage<TProps> = () => {
                     ></path>
                   </svg>
                 </IconButton>
-                <IconButton sx={{ color: theme.palette.error.main }} onClick={handleLoginGoogle}>
+                <IconButton 
+                  onClick={handleLoginGoogle}
+                  sx={{ 
+                    width: '56px',
+                    height: '56px',
+                    border: '2px solid',
+                    borderColor: 'divider',
+                    borderRadius: '12px',
+                    color: theme.palette.error.main,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      borderColor: theme.palette.error.main,
+                      backgroundColor: `${theme.palette.error.main}15`,
+                      transform: 'translateY(-3px)',
+                      boxShadow: `0 8px 16px ${theme.palette.error.main}40`
+                    }
+                  }}
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     role='img'
-                    fontSize='1.375rem'
+                    fontSize='1.75rem'
                     className='iconify iconify--mdi'
                     width='1em'
                     height='1em'
