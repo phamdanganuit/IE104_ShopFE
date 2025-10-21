@@ -8,15 +8,15 @@ import Icon from 'src/components/Icon'
 const pulse = keyframes`
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(103, 58, 183, 0.7);
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
   }
   50% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(103, 58, 183, 0);
+    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(103, 58, 183, 0);
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
   }
 `
 
@@ -35,56 +35,55 @@ const ChatContainer = styled(Paper)(({ theme }) => ({
   position: 'fixed',
   bottom: '100px',
   right: '24px',
-  width: '380px',
-  height: '600px',
+  width: '400px',
+  height: '650px',
   display: 'flex',
   flexDirection: 'column',
-  borderRadius: '24px',
+  borderRadius: '20px',
   overflow: 'hidden',
-  boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-  border: `1px solid ${theme.palette.divider}`,
+  boxShadow: theme.palette.mode === 'dark' 
+    ? '0 20px 60px rgba(0, 0, 0, 0.6)'
+    : '0 20px 60px rgba(0, 0, 0, 0.15)',
+  border: theme.palette.mode === 'dark'
+    ? '1px solid rgba(255, 255, 255, 0.1)'
+    : '1px solid rgba(0, 0, 0, 0.08)',
   zIndex: 9999,
   animation: `${slideUp} 0.3s ease-out`,
+  background: theme.palette.background.paper,
   
   [theme.breakpoints.down('sm')]: {
-    width: 'calc(100vw - 48px)',
-    height: '70vh',
-    bottom: '90px',
-    right: '24px'
+    width: 'calc(100vw - 32px)',
+    height: '75vh',
+    bottom: '80px',
+    right: '16px'
   }
 }))
 
 const ChatHeader = styled(Box)(({ theme }) => ({
-  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-  padding: '20px',
+  background: theme.palette.mode === 'dark'
+    ? 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'
+    : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+  padding: '20px 24px',
   color: '#fff',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-  position: 'relative',
-  
-  '&::after': {
-    content: '""',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '1px',
-    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)'
-  }
+  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+  borderBottom: theme.palette.mode === 'dark'
+    ? '1px solid rgba(255, 255, 255, 0.05)'
+    : 'none'
 }))
 
 const MessagesContainer = styled(Box)(({ theme }) => ({
   flex: 1,
   overflowY: 'auto',
-  padding: '20px',
+  padding: '24px',
   background: theme.palette.mode === 'dark' 
-    ? 'linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)'
-    : 'linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%)',
+    ? '#0f172a'
+    : '#f8fafc',
   display: 'flex',
   flexDirection: 'column',
-  gap: '16px',
+  gap: '12px',
   
   '&::-webkit-scrollbar': {
     width: '6px'
@@ -93,63 +92,101 @@ const MessagesContainer = styled(Box)(({ theme }) => ({
     background: 'transparent'
   },
   '&::-webkit-scrollbar-thumb': {
-    background: theme.palette.primary.main,
+    background: theme.palette.mode === 'dark' 
+      ? 'rgba(148, 163, 184, 0.3)'
+      : 'rgba(148, 163, 184, 0.5)',
     borderRadius: '10px',
     '&:hover': {
-      background: theme.palette.primary.dark
+      background: theme.palette.mode === 'dark'
+        ? 'rgba(148, 163, 184, 0.5)'
+        : 'rgba(148, 163, 184, 0.7)'
     }
   }
 }))
 
 const MessageBubble = styled(Box)<{ isUser?: boolean }>(({ theme, isUser }) => ({
-  maxWidth: '75%',
+  maxWidth: '80%',
   padding: '12px 16px',
-  borderRadius: isUser ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
+  borderRadius: isUser ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
   alignSelf: isUser ? 'flex-end' : 'flex-start',
   background: isUser 
-    ? theme.palette.primary.main
-    : theme.palette.background.paper,
-  color: isUser ? '#fff' : theme.palette.text.primary,
-  boxShadow: isUser 
-    ? `0 4px 12px ${theme.palette.primary.main}40`
+    ? theme.palette.mode === 'dark'
+      ? '#2563eb'
+      : '#2563eb'
+    : theme.palette.mode === 'dark'
+      ? '#1e293b'
+      : '#ffffff',
+  color: isUser 
+    ? '#ffffff' 
+    : theme.palette.text.primary,
+  boxShadow: theme.palette.mode === 'dark'
+    ? '0 2px 8px rgba(0, 0, 0, 0.3)'
     : '0 2px 8px rgba(0, 0, 0, 0.08)',
   animation: `${slideUp} 0.3s ease-out`,
   position: 'relative',
-  border: isUser ? 'none' : `1px solid ${theme.palette.divider}`,
+  border: isUser 
+    ? 'none' 
+    : theme.palette.mode === 'dark'
+      ? '1px solid rgba(255, 255, 255, 0.1)'
+      : '1px solid rgba(0, 0, 0, 0.08)',
   
   '& .message-time': {
-    fontSize: '11px',
-    marginTop: '4px',
-    opacity: 0.7,
-    display: 'block'
+    fontSize: '10px',
+    marginTop: '6px',
+    opacity: 0.6,
+    display: 'block',
+    fontWeight: 500
   }
 }))
 
 const InputContainer = styled(Box)(({ theme }) => ({
-  padding: '16px 20px',
+  padding: '20px 24px',
   background: theme.palette.background.paper,
-  borderTop: `1px solid ${theme.palette.divider}`,
+  borderTop: theme.palette.mode === 'dark'
+    ? '1px solid rgba(255, 255, 255, 0.05)'
+    : '1px solid rgba(0, 0, 0, 0.08)',
   display: 'flex',
   gap: '12px',
-  alignItems: 'center',
-  boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.05)'
+  alignItems: 'center'
 }))
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   flex: 1,
   '& .MuiOutlinedInput-root': {
-    borderRadius: '24px',
-    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-    transition: 'all 0.3s ease',
+    borderRadius: '28px',
+    backgroundColor: theme.palette.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.05)' 
+      : '#f1f5f9',
+    border: theme.palette.mode === 'dark'
+      ? '1px solid rgba(255, 255, 255, 0.1)'
+      : '1px solid transparent',
+    transition: 'all 0.2s ease',
+    
+    '& fieldset': {
+      border: 'none'
+    },
     
     '&:hover': {
-      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)'
+      backgroundColor: theme.palette.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.08)' 
+        : '#e2e8f0',
+      borderColor: theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.15)'
+        : 'transparent'
     },
     
     '&.Mui-focused': {
-      backgroundColor: theme.palette.background.default,
-      boxShadow: `0 0 0 3px ${theme.palette.primary.main}20`
+      backgroundColor: theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.1)'
+        : '#ffffff',
+      borderColor: '#2563eb',
+      boxShadow: '0 0 0 3px rgba(37, 99, 235, 0.1)'
     }
+  },
+  
+  '& .MuiOutlinedInput-input': {
+    padding: '12px 18px',
+    fontSize: '14px'
   }
 }))
 
@@ -159,17 +196,26 @@ const FloatingButton = styled(Fab)(({ theme }) => ({
   right: '24px',
   width: '64px',
   height: '64px',
-  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+  background: theme.palette.mode === 'dark'
+    ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)'
+    : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
   color: '#fff',
-  boxShadow: `0 8px 24px ${theme.palette.primary.main}60`,
+  boxShadow: theme.palette.mode === 'dark'
+    ? '0 8px 24px rgba(37, 99, 235, 0.4)'
+    : '0 8px 24px rgba(37, 99, 235, 0.3)',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   zIndex: 9998,
   borderRadius: '50%',
+  border: theme.palette.mode === 'dark'
+    ? '2px solid rgba(255, 255, 255, 0.1)'
+    : 'none',
   
   '&:hover': {
     transform: 'translateY(-4px) scale(1.05)',
-    boxShadow: `0 12px 32px ${theme.palette.primary.main}80`,
-    background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 12px 32px rgba(37, 99, 235, 0.6)'
+      : '0 12px 32px rgba(37, 99, 235, 0.4)',
+    background: 'linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)'
   },
   
   '&.has-notification': {
@@ -179,38 +225,44 @@ const FloatingButton = styled(Fab)(({ theme }) => ({
 
 const NotificationBadge = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  top: '8px',
-  right: '8px',
-  width: '20px',
-  height: '20px',
+  top: '6px',
+  right: '6px',
+  width: '22px',
+  height: '22px',
   borderRadius: '50%',
-  background: theme.palette.error.main,
+  background: '#ef4444',
   color: '#fff',
   fontSize: '11px',
-  fontWeight: 'bold',
+  fontWeight: 700,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  border: `2px solid ${theme.palette.background.default}`,
-  boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+  border: '3px solid #2563eb',
+  boxShadow: '0 2px 8px rgba(239, 68, 68, 0.4)'
 }))
 
 const TypingIndicator = styled(Box)(({ theme }) => ({
   display: 'flex',
-  gap: '4px',
+  gap: '5px',
   padding: '12px 16px',
-  background: theme.palette.background.paper,
-  borderRadius: '20px 20px 20px 4px',
+  background: theme.palette.mode === 'dark'
+    ? '#1e293b'
+    : '#ffffff',
+  borderRadius: '18px 18px 18px 4px',
   alignSelf: 'flex-start',
-  maxWidth: '75px',
-  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-  border: `1px solid ${theme.palette.divider}`,
+  maxWidth: '70px',
+  boxShadow: theme.palette.mode === 'dark'
+    ? '0 2px 8px rgba(0, 0, 0, 0.3)'
+    : '0 2px 8px rgba(0, 0, 0, 0.08)',
+  border: theme.palette.mode === 'dark'
+    ? '1px solid rgba(255, 255, 255, 0.1)'
+    : '1px solid rgba(0, 0, 0, 0.08)',
   
   '& span': {
-    width: '8px',
-    height: '8px',
+    width: '7px',
+    height: '7px',
     borderRadius: '50%',
-    background: theme.palette.primary.main,
+    background: '#2563eb',
     animation: 'typing 1.4s infinite',
     
     '&:nth-of-type(2)': {
@@ -234,45 +286,60 @@ const TypingIndicator = styled(Box)(({ theme }) => ({
 }))
 
 const QuickReply = styled(Chip)(({ theme }) => ({
-  borderRadius: '16px',
-  background: theme.palette.background.paper,
-  border: `2px solid ${theme.palette.primary.main}`,
-  color: theme.palette.primary.main,
+  borderRadius: '20px',
+  background: theme.palette.mode === 'dark'
+    ? 'rgba(37, 99, 235, 0.1)'
+    : '#eff6ff',
+  border: theme.palette.mode === 'dark'
+    ? '1px solid rgba(37, 99, 235, 0.3)'
+    : '1px solid #bfdbfe',
+  color: '#2563eb',
   fontWeight: 600,
+  fontSize: '13px',
   transition: 'all 0.2s ease',
   cursor: 'pointer',
+  height: 'auto',
+  padding: '8px 16px',
   
   '&:hover': {
-    background: theme.palette.primary.main,
+    background: '#2563eb',
     color: '#fff',
+    borderColor: '#2563eb',
     transform: 'translateY(-2px)',
-    boxShadow: `0 4px 12px ${theme.palette.primary.main}40`
+    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
   }
 }))
 
 const ProductCard = styled(Box)(({ theme }) => ({
-  background: theme.palette.background.paper,
-  borderRadius: '12px',
+  background: theme.palette.mode === 'dark'
+    ? '#1e293b'
+    : '#ffffff',
+  borderRadius: '14px',
   padding: '12px',
   marginTop: '8px',
-  border: `1px solid ${theme.palette.divider}`,
+  border: theme.palette.mode === 'dark'
+    ? '1px solid rgba(255, 255, 255, 0.1)'
+    : '1px solid #e2e8f0',
   display: 'flex',
   gap: '12px',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
   
   '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: `0 4px 12px ${theme.palette.primary.main}20`,
-    borderColor: theme.palette.primary.main
+    transform: 'translateX(4px)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 4px 12px rgba(37, 99, 235, 0.2)'
+      : '0 4px 12px rgba(37, 99, 235, 0.15)',
+    borderColor: '#2563eb'
   }
 }))
 
 const ProductImage = styled('img')({
-  width: '60px',
-  height: '60px',
+  width: '70px',
+  height: '70px',
   objectFit: 'cover',
-  borderRadius: '8px'
+  borderRadius: '10px',
+  flexShrink: 0
 })
 
 interface Message {
@@ -396,29 +463,30 @@ const ChatBotAI = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Avatar
                 sx={{
-                  width: 44,
-                  height: 44,
-                  background: 'rgba(255,255,255,0.2)',
-                  border: '2px solid rgba(255,255,255,0.3)'
+                  width: 48,
+                  height: 48,
+                  background: 'rgba(255,255,255,0.15)',
+                  border: '2px solid rgba(255,255,255,0.2)',
+                  backdropFilter: 'blur(10px)'
                 }}
               >
-                <Icon icon='mdi:robot-excited' fontSize={24} />
+                <Icon icon='mdi:robot-excited' fontSize={28} color='#fff' />
               </Avatar>
               <Box>
-                <Typography variant='h6' sx={{ fontWeight: 700, lineHeight: 1.2 }}>
-                  💬 {t('Support')}
+                <Typography variant='h6' sx={{ fontWeight: 700, lineHeight: 1.2, fontSize: '16px' }}>
+                  🤖 AI Support
                 </Typography>
-                <Typography variant='caption' sx={{ opacity: 0.9, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Typography variant='caption' sx={{ opacity: 0.95, display: 'flex', alignItems: 'center', gap: 0.5, fontSize: '12px' }}>
                   <Box
                     sx={{
-                      width: 8,
-                      height: 8,
+                      width: 7,
+                      height: 7,
                       borderRadius: '50%',
-                      background: '#4ade80',
-                      boxShadow: '0 0 8px #4ade80'
+                      background: '#10b981',
+                      boxShadow: '0 0 6px #10b981'
                     }}
                   />
-                  Online 24/7
+                  Trực tuyến 24/7
                 </Typography>
               </Box>
             </Box>
@@ -426,14 +494,16 @@ const ChatBotAI = () => {
               onClick={() => setIsOpen(false)}
               sx={{
                 color: '#fff',
+                width: 36,
+                height: 36,
                 '&:hover': {
-                  background: 'rgba(255,255,255,0.1)',
+                  background: 'rgba(255,255,255,0.15)',
                   transform: 'rotate(90deg)'
                 },
-                transition: 'all 0.3s ease'
+                transition: 'all 0.2s ease'
               }}
             >
-              <Icon icon='mdi:close' fontSize={24} />
+              <Icon icon='mdi:close' fontSize={22} />
             </IconButton>
           </ChatHeader>
 
@@ -464,38 +534,77 @@ const ChatBotAI = () => {
                               e.target.src = '/images/placeholder-product.png'
                             }}
                           />
-                          <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                             <Typography 
                               variant='body2' 
                               sx={{ 
-                                fontWeight: 600, 
-                                mb: 0.5,
+                                fontWeight: 600,
+                                fontSize: '14px',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap'
+                                whiteSpace: 'nowrap',
+                                color: theme.palette.text.primary
                               }}
                             >
                               {product.name}
                             </Typography>
-                            <Typography variant='caption' color='primary' sx={{ fontWeight: 700 }}>
-                              {finalPrice.toLocaleString('vi-VN')}₫
-                            </Typography>
-                            {product.discount > 0 && (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                               <Typography 
-                                variant='caption' 
+                                variant='body2' 
                                 sx={{ 
-                                  ml: 1, 
-                                  textDecoration: 'line-through', 
-                                  opacity: 0.6 
+                                  fontWeight: 700,
+                                  fontSize: '15px',
+                                  color: '#2563eb'
                                 }}
                               >
-                                {product.price.toLocaleString('vi-VN')}₫
+                                {finalPrice.toLocaleString('vi-VN')}₫
                               </Typography>
-                            )}
-                            <Typography variant='caption' sx={{ display: 'block', opacity: 0.7 }}>
-                              {product.countInStock > 0 ? `Còn ${product.countInStock} sp` : 'Hết hàng'}
+                              {product.discount > 0 && (
+                                <>
+                                  <Typography 
+                                    variant='caption' 
+                                    sx={{ 
+                                      textDecoration: 'line-through', 
+                                      opacity: 0.5,
+                                      fontSize: '12px'
+                                    }}
+                                  >
+                                    {product.price.toLocaleString('vi-VN')}₫
+                                  </Typography>
+                                  <Chip 
+                                    label={`-${product.discount}%`} 
+                                    size='small'
+                                    sx={{ 
+                                      height: '20px',
+                                      fontSize: '11px',
+                                      fontWeight: 700,
+                                      background: '#fef3c7',
+                                      color: '#92400e',
+                                      border: 'none'
+                                    }} 
+                                  />
+                                </>
+                              )}
+                            </Box>
+                            <Typography 
+                              variant='caption' 
+                              sx={{ 
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5,
+                                opacity: 0.7,
+                                fontSize: '12px'
+                              }}
+                            >
+                              <Icon 
+                                icon={product.countInStock > 0 ? 'mdi:check-circle' : 'mdi:close-circle'} 
+                                fontSize={14}
+                                color={product.countInStock > 0 ? '#10b981' : '#ef4444'}
+                              />
+                              {product.countInStock > 0 ? `Còn ${product.countInStock} sản phẩm` : 'Hết hàng'}
                             </Typography>
                           </Box>
+                          <Icon icon='mdi:chevron-right' fontSize={20} style={{ opacity: 0.3 }} />
                         </ProductCard>
                       )
                     })}
@@ -544,31 +653,36 @@ const ChatBotAI = () => {
             <StyledTextField
               fullWidth
               size='small'
-              placeholder='Nhập tin nhắn...'
+              placeholder='Nhập câu hỏi của bạn...'
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
             />
             <IconButton
               onClick={handleSendMessage}
               disabled={!inputValue.trim()}
               sx={{
-                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                background: '#2563eb',
                 color: '#fff',
-                width: 44,
-                height: 44,
+                width: 46,
+                height: 46,
                 '&:hover': {
-                  background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
-                  transform: 'scale(1.05)'
+                  background: '#1d4ed8',
+                  transform: 'scale(1.08)'
                 },
                 '&:disabled': {
-                  background: theme.palette.action.disabledBackground,
-                  color: theme.palette.action.disabled
+                  background: theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.1)'
+                    : '#e2e8f0',
+                  color: theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.3)'
+                    : '#94a3b8'
                 },
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)'
               }}
             >
-              <Icon icon='material-symbols:send' fontSize={20} />
+              <Icon icon='mingcute:send-fill' fontSize={22} />
             </IconButton>
           </InputContainer>
         </ChatContainer>
