@@ -6,6 +6,9 @@
 [![Groq AI](https://img.shields.io/badge/Groq-AI-orange?style=for-the-badge)](https://groq.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
+> 🎥 **[Watch Demo Video on YouTube](YOUR_YOUTUBE_DEMO_LINK_HERE)**  
+> 🔗 **[Backend Repository (Node.js + MongoDB)](YOUR_BACKEND_GITHUB_LINK_HERE)**
+
 **[English](#english) | [日本語](#japanese) | [Tiếng Việt](#vietnamese)**
 
 ---
