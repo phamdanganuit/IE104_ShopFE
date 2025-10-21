@@ -1,27 +1,39 @@
+// ** Next
+import { NextPage } from 'next'
+import dynamic from 'next/dynamic'
+
 // ** React
 import { useEffect, useState } from 'react'
 
-// ** Components
-import Spinner from 'src/components/spinner'
-
 // ** Mui
 import { Box, Grid } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
-// ** Services
-import {
-  getCountAllRecords,
-  getCountOrderStatus,
-  getCountProductTypes,
-  getCountRevenueYear,
-  getCountUserType
-} from 'src/services/report'
+// ** Components
+import CardStatsVertical from 'src/components/card-stats-vertical'
+import Spinner from 'src/components/spinner'
 import CardCountRecords from 'src/views/pages/dashboard/components/CardCountRecords'
 import CardProductType from 'src/views/pages/dashboard/components/CardProductType'
 import CardCountRevenue from 'src/views/pages/dashboard/components/CardCountRevenue'
 import CardCountUserType from 'src/views/pages/dashboard/components/CardCountUserType'
 import CardCountOrderStatus from 'src/views/pages/dashboard/components/CardCountStatusOrder'
-import { getAllProducts } from 'src/services/product'
 import CardProductPopular from 'src/views/pages/dashboard/components/CardProductPopular'
+
+// ** Services
+import {
+  getCountAllRecords,
+  getCountOrderStatus,
+  getCountProductStatus,
+  getCountProductTypes,
+  getCountRevenueYear,
+  getCountUserType
+} from 'src/services/report'
+import { getAllProducts } from 'src/services/product'
+
+// ** Utils
+import { formatNumber } from 'src/utils'
+
+const ReactApexcharts = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 export interface TCountProductType {
   typeName: string
@@ -45,7 +57,9 @@ export interface TProductPopular {
   }
 }
 
-const Dashboard = () => {
+type TProps = {}
+
+const DashboardPage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [countRecords, setCountRecords] = useState<Record<string, number>>({})
   const [countProductTypes, setCountProductTypes] = useState<TCountProductType[]>([])
@@ -168,4 +182,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default DashboardPage

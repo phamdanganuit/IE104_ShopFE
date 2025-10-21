@@ -66,22 +66,24 @@ export async function getServerSideProps() {
       }
     })
 
+    const productTypeValue = productTypes?.[0]?.value
+
     const res = await getAllProductsPublic({
-      params: { limit: limit, page: page, order, productType: productTypes?.[0]?.value }
+      params: { limit: limit, page: page, order, productType: productTypeValue }
     })
 
     const data = res?.data
 
     return {
       props: {
-        products: data?.products,
-        totalCount: data?.totalCount,
+        products: data?.products || [],
+        totalCount: data?.totalCount || 0,
         productTypes: productTypes,
         params: {
           limit,
           page,
           order,
-          productType: productTypes?.[0]?.value
+          productType: productTypeValue || null
         }
       }
     }
@@ -90,10 +92,12 @@ export async function getServerSideProps() {
       props: {
         products: [],
         totalCount: 0,
+        productTypes: [],
         params: {
           limit,
           page,
-          order
+          order,
+          productType: null
         }
       }
     }

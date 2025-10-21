@@ -24,7 +24,8 @@ type TProps = {}
 
 const countryCode = {
   en: 'GB',
-  vi: 'VN'
+  vi: 'VN',
+  ja: 'JP'
 }
 
 const LanguageDropdown = (props: TProps) => {

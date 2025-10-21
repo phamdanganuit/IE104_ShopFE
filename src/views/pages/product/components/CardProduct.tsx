@@ -39,9 +39,26 @@ interface TCardProduct {
 
 const StyleCard = styled(Card)(({ theme }) => ({
   position: 'relative',
-  boxShadow: theme.shadows[4],
+  boxShadow: theme.shadows[2],
+  borderRadius: '16px',
+  overflow: 'hidden',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  border: `1px solid ${theme.palette.divider}`,
+  '&:hover': {
+    transform: 'translateY(-8px)',
+    boxShadow: theme.shadows[12],
+    borderColor: theme.palette.primary.main,
+    '& .product-image': {
+      transform: 'scale(1.08)'
+    },
+    '& .product-overlay': {
+      opacity: 1
+    }
+  },
   '.MuiCardMedia-root.MuiCardMedia-media': {
-    objectFit: 'contain'
+    objectFit: 'contain',
+    transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    backgroundColor: theme.palette.background.paper
   }
 }))
 
@@ -127,15 +144,104 @@ const CardProduct = (props: TCardProduct) => {
   }, [item])
 
   return (
-    <StyleCard sx={{ width: '100%' }}>
-      <CardMedia component='img' height='194' image={item.image} alt='image' />
-      <CardContent sx={{ padding: '8px 12px' }}>
+    <StyleCard sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Discount Badge */}
+      {item.discount > 0 && memoIsExpiry && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 12,
+            right: 12,
+            zIndex: 2,
+            backgroundColor: theme.palette.error.main,
+            color: 'white',
+            padding: '6px 12px',
+            borderRadius: '20px',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            boxShadow: theme.shadows[4],
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}
+        >
+          <Icon icon='mdi:fire' fontSize={18} />
+          -{item.discount}%
+        </Box>
+      )}
+
+      {/* Out of Stock Badge */}
+      {item.countInStock === 0 && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 12,
+            left: 12,
+            zIndex: 2,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            color: 'white',
+            padding: '6px 12px',
+            borderRadius: '20px',
+            fontWeight: 'bold',
+            fontSize: '12px',
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          {t('Out_of_stock')}
+        </Box>
+      )}
+
+      {/* Like Button Overlay */}
+      <IconButton
+        onClick={() => handleToggleLikeProduct(item._id, Boolean(user && item?.likedBy?.includes(user._id)))}
+        sx={{
+          position: 'absolute',
+          top: 12,
+          left: 12,
+          zIndex: 2,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(10px)',
+          '&:hover': {
+            backgroundColor: 'white',
+            transform: 'scale(1.1)'
+          },
+          transition: 'all 0.2s'
+        }}
+      >
+        {user && item?.likedBy?.includes(user._id) ? (
+          <Icon icon='mdi:heart' style={{ color: theme.palette.error.main, fontSize: '24px' }} />
+        ) : (
+          <Icon icon='tabler:heart' style={{ color: theme.palette.text.secondary, fontSize: '24px' }} />
+        )}
+      </IconButton>
+
+      {/* Product Image */}
+      <Box sx={{ position: 'relative', paddingTop: '100%', overflow: 'hidden', backgroundColor: '#f5f5f5' }}>
+        <CardMedia
+          component='img'
+          image={item.image}
+          alt={item.name}
+          className='product-image'
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            padding: '16px'
+          }}
+        />
+      </Box>
+
+      <CardContent sx={{ padding: '16px', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* Product Name */}
         <Typography
           onClick={() => handleNavigateDetails(item.slug)}
-          variant='h5'
+          variant='h6'
           sx={{
-            color: theme.palette.primary.main,
-            fontWeight: 'bold',
+            color: theme.palette.text.primary,
+            fontWeight: 600,
             cursor: 'pointer',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -143,230 +249,174 @@ const CardProduct = (props: TCardProduct) => {
             '-webkitLineClamp': '2',
             '-webkitBoxOrient': 'vertical',
             minHeight: '48px',
-            mb: 2
+            mb: 2,
+            fontSize: '16px',
+            lineHeight: 1.5,
+            transition: 'color 0.2s',
+            '&:hover': {
+              color: theme.palette.primary.main
+            }
           }}
         >
           {item.name}
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+
+        {/* Price Section */}
+        <Box sx={{ mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+            <Typography
+              variant='h5'
+              sx={{
+                color: theme.palette.primary.main,
+                fontWeight: 700,
+                fontSize: '20px'
+              }}
+            >
+              {item.discount > 0 && memoIsExpiry
+                ? formatNumberToLocal((item.price * (100 - item.discount)) / 100)
+                : formatNumberToLocal(item.price)}{' '}
+              ₫
+            </Typography>
+          </Box>
           {item.discount > 0 && memoIsExpiry && (
             <Typography
-              variant='h6'
+              variant='body2'
               sx={{
-                color: theme.palette.error.main,
-                fontWeight: 'bold',
+                color: theme.palette.text.secondary,
                 textDecoration: 'line-through',
                 fontSize: '14px'
               }}
             >
-              {formatNumberToLocal(item.price)} VND
+              {formatNumberToLocal(item.price)} ₫
             </Typography>
           )}
+        </Box>
+
+        {/* Stock Info */}
+        {item.countInStock > 0 ? (
           <Typography
-            variant='h4'
+            variant='body2'
             sx={{
-              color: theme.palette.primary.main,
-              fontWeight: 'bold',
-              fontSize: '18px'
+              color: theme.palette.success.main,
+              mb: 1,
+              fontSize: '13px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5
             }}
           >
-            {item.discount > 0 && memoIsExpiry ? (
-              <>{formatNumberToLocal((item.price * (100 - item.discount)) / 100)}</>
-            ) : (
-              <>{formatNumberToLocal(item.price)}</>
-            )}{' '}
-            VND
+            <Icon icon='mdi:check-circle' fontSize={16} />
+            {t('Still')} {item.countInStock} {t('product_in_stock')}
           </Typography>
-          {item.discount > 0 && memoIsExpiry && (
-            <Box
-              sx={{
-                backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
-                width: '36px',
-                height: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '2px'
-              }}
-            >
-              <Typography
-                variant='h6'
-                sx={{
-                  color: theme.palette.error.main,
-                  fontSize: '10px',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                - {item.discount} %
+        ) : (
+          <Typography
+            variant='body2'
+            sx={{
+              color: theme.palette.error.main,
+              mb: 1,
+              fontSize: '13px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5
+            }}
+          >
+            <Icon icon='mdi:close-circle' fontSize={16} />
+            {t('Out_of_stock')}
+          </Typography>
+        )}
+
+        {/* Sold Info */}
+        {item.sold > 0 && (
+          <Typography variant='body2' sx={{ color: theme.palette.text.secondary, mb: 1.5, fontSize: '13px' }}>
+            {t('Sold_product')}: <strong>{item.sold}</strong>
+          </Typography>
+        )}
+
+        {/* Stats Row */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+          {item?.location?.name && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Icon icon='carbon:location' fontSize={16} style={{ color: theme.palette.text.secondary }} />
+              <Typography variant='caption' sx={{ color: theme.palette.text.secondary, fontSize: '12px' }}>
+                {item?.location?.name}
+              </Typography>
+            </Box>
+          )}
+          {item?.views > 0 && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Icon icon='mdi:eye-outline' fontSize={16} style={{ color: theme.palette.text.secondary }} />
+              <Typography variant='caption' sx={{ color: theme.palette.text.secondary, fontSize: '12px' }}>
+                {item?.views}
+              </Typography>
+            </Box>
+          )}
+          {!!item?.likedBy?.length && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Icon icon='mdi:heart-outline' fontSize={16} style={{ color: theme.palette.text.secondary }} />
+              <Typography variant='caption' sx={{ color: theme.palette.text.secondary, fontSize: '12px' }}>
+                {item?.likedBy?.length}
               </Typography>
             </Box>
           )}
         </Box>
-        {item.countInStock > 0 ? (
-          <Typography variant='body2' color='text.secondary' sx={{ my: 1 }}>
-            <>{t('Count_in_stock')}</> <b>{item.countInStock}</b> <>{t('Product')}</>
+
+        {/* Rating Section */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <Rating name='read-only' size='small' value={item?.averageRating || 0} precision={0.5} readOnly />
+          <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
+            {item.totalReviews > 0 ? `(${item.totalReviews})` : `(${t('not_review')})`}
           </Typography>
-        ) : (
-          <Box
+        </Box>
+
+        {/* Action Buttons */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mt: 'auto' }}>
+          <Button
+            variant='outlined'
+            fullWidth
             sx={{
-              backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
-              width: '60px',
-              height: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '2px',
-              my: 1
+              height: 42,
+              borderRadius: '12px',
+              fontWeight: 600,
+              textTransform: 'none',
+              fontSize: '14px',
+              borderWidth: '2px',
+              '&:hover': {
+                borderWidth: '2px',
+                transform: 'translateY(-2px)',
+                boxShadow: theme.shadows[4]
+              },
+              transition: 'all 0.2s'
             }}
+            disabled={item.countInStock < 1}
+            onClick={() => handleUpdateProductToCart(item)}
+            startIcon={<Icon icon='solar:cart-plus-bold' fontSize={20} />}
           >
-            <Typography
-              variant='h6'
-              sx={{
-                color: theme.palette.error.main,
-                fontSize: '12px',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              Hết hàng
-            </Typography>
-          </Box>
-        )}
-
-        {item.sold ? (
-          <Typography variant='body2' color='text.secondary'>
-            <>{t('Sold_product')}</> <b>{item.sold}</b> <>{t('Product')}</>
-          </Typography>
-        ) : (
-          <Typography variant='body2' color='text.secondary'>
-            {t('No_sell_product')}
-          </Typography>
-        )}
-        {(item?.location?.name || item.views) && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', mt: 2 }}>
-            {item?.location?.name && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-                <Icon icon='carbon:location' />
-
-                <Typography
-                  variant='h6'
-                  sx={{
-                    fontWeight: 'bold',
-                    fontSize: '14px'
-                  }}
-                >
-                  {item?.location?.name}
-                </Typography>
-              </Box>
-            )}
-            {item?.views && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-                <Icon icon='lets-icons:view-light' />
-
-                <Typography
-                  variant='h6'
-                  sx={{
-                    fontWeight: 'bold',
-                    fontSize: '14px'
-                  }}
-                >
-                  {item?.views}
-                </Typography>
-              </Box>
-            )}
-            {!!item?.uniqueViews?.length && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-                <Icon icon='mdi:account-view-outline' />
-                <Typography
-                  variant='h6'
-                  sx={{
-                    fontWeight: 'bold',
-                    fontSize: '14px'
-                  }}
-                >
-                  {item?.uniqueViews?.length}
-                </Typography>
-              </Box>
-            )}
-            {!!item?.likedBy?.length && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-                <Icon icon='icon-park-outline:like' />
-                <Typography
-                  variant='h6'
-                  sx={{
-                    fontWeight: 'bold',
-                    fontSize: '14px'
-                  }}
-                >
-                  {item?.likedBy?.length}
-                </Typography>
-              </Box>
-            )}
-          </Box>
-        )}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {!!item.averageRating ? (
-              <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-                <Rating
-                  name='read-only'
-                  sx={{ fontSize: '16px' }}
-                  defaultValue={item?.averageRating}
-                  precision={0.5}
-                  readOnly
-                />
-              </Typography>
-            ) : (
-              <Rating name='read-only' sx={{ fontSize: '16px' }} defaultValue={0} precision={0.5} readOnly />
-            )}
-            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-              {!!item.totalReviews ? <b>{item.totalReviews}</b> : <span>{t('not_review')}</span>}
-            </Typography>
-          </Box>
-          <IconButton
-            onClick={() => handleToggleLikeProduct(item._id, Boolean(user && item?.likedBy?.includes(user._id)))}
+            {t('Add_to_cart')}
+          </Button>
+          <Button
+            variant='contained'
+            fullWidth
+            sx={{
+              height: 42,
+              borderRadius: '12px',
+              fontWeight: 600,
+              textTransform: 'none',
+              fontSize: '14px',
+              boxShadow: theme.shadows[4],
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: theme.shadows[8]
+              },
+              transition: 'all 0.2s'
+            }}
+            disabled={item.countInStock < 1}
+            onClick={() => handleBuyProductToCart(item)}
+            startIcon={<Icon icon='solar:cart-check-bold' fontSize={20} />}
           >
-            {user && item?.likedBy?.includes(user._id) ? (
-              <Icon icon='mdi:heart' style={{ color: theme.palette.primary.main }} />
-            ) : (
-              <Icon icon='tabler:heart' style={{ color: theme.palette.primary.main }} />
-            )}
-          </IconButton>
+            {t('Buy_now')}
+          </Button>
         </Box>
       </CardContent>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 12px 10px', gap: 2 }}>
-        <Button
-          variant='outlined'
-          fullWidth
-          sx={{
-            height: 40,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '2px',
-            fontWeight: 'bold'
-          }}
-          disabled={item.countInStock < 1}
-          onClick={() => handleUpdateProductToCart(item)}
-        >
-          <Icon icon='bx:cart' fontSize={24} style={{ position: 'relative', top: '-2px' }} />
-          {t('Add_to_cart')}
-        </Button>
-        <Button
-          fullWidth
-          variant='contained'
-          sx={{
-            height: 40,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '2px',
-            fontWeight: 'bold'
-          }}
-          disabled={item.countInStock < 1}
-          onClick={() => handleBuyProductToCart(item)}
-        >
-          <Icon icon='icon-park-outline:buy' fontSize={20} style={{ position: 'relative', top: '-2px' }} />
-          {t('Buy_now')}
-        </Button>
-      </Box>
     </StyleCard>
   )
 }

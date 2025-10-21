@@ -40,5 +40,9 @@ export const LANGUAGE_OPTIONS = [
   {
     lang: 'English',
     value: 'en'
+  },
+  {
+    lang: '日本語',
+    value: 'ja'
   }
 ]

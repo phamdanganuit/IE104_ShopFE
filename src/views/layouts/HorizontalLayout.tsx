@@ -105,10 +105,18 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
           variant='h6'
           color='primary'
           noWrap
-          sx={{ flexGrow: 1, fontWeight: '600', cursor: 'pointer' }}
+          sx={{ 
+            flexGrow: 1, 
+            fontWeight: '600', 
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1
+          }}
         >
-          <Link style={{ color: 'inherit' }} href={ROUTE_CONFIG.HOME}>
-            {t('Home Page')}
+          <Link style={{ color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }} href={ROUTE_CONFIG.HOME}>
+            <Icon icon='solar:home-smile-bold-duotone' fontSize={32} />
+            <span style={{ fontSize: '20px', fontWeight: 700 }}>GearVN</span>
           </Link>
         </Typography>
         <LanguageDropdown />

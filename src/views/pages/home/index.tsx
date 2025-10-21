@@ -1,22 +1,21 @@
 // ** Next
 import { NextPage } from 'next'
+import dynamic from 'next/dynamic'
 
 // ** React
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
-import { Box, Grid, Typography, useTheme, Tab, Tabs, TabsProps } from '@mui/material'
+import { Box, Grid, Typography, useTheme, Tab, Tabs, TabsProps, IconButton } from '@mui/material'
 
 // ** Redux
 
 // ** Components
 import Spinner from 'src/components/spinner'
-import CustomPagination from 'src/components/custom-pagination'
 import CardProduct from 'src/views/pages/product/components/CardProduct'
-import FilterProduct from 'src/views/pages/product/components/FilterProduct'
 import InputSearch from 'src/components/input-search'
-import NoData from 'src/components/no-data'
+import Icon from 'src/components/Icon'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
@@ -37,8 +36,22 @@ import { resetInitialState } from 'src/stores/product'
 import { OBJECT_TYPE_ERROR_PRODUCT } from 'src/configs/error'
 import CustomSelect from 'src/components/custom-select'
 import CardSkeleton from 'src/views/pages/product/components/CardSkeleton'
-import ChatBotAI from 'src/components/chat-bot-ai'
 import { useRouter } from 'next/router'
+import { keyframes } from '@mui/system'
+
+const floatAnimation = keyframes`
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+`
+
+const CustomPagination = dynamic(() => import('src/components/custom-pagination'))
+const FilterProduct = dynamic(() => import('src/views/pages/product/components/FilterProduct'))
+const NoData = dynamic(() => import('src/components/no-data'))
+const ChatBotAI = dynamic(() => import('src/components/chat-bot-ai'), { ssr: false })
 
 interface TOptions {
   label: string
@@ -64,8 +77,40 @@ interface TProductPublicState {
 
 const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
   '&.MuiTabs-root': {
-    borderBottom: 'none'
+    borderBottom: `2px solid ${theme.palette.divider}`,
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '12px 12px 0 0',
+    padding: '8px 16px',
+    boxShadow: theme.shadows[2]
+  },
+  '& .MuiTab-root': {
+    textTransform: 'none',
+    fontWeight: 600,
+    fontSize: '16px',
+    minHeight: '48px',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      color: theme.palette.primary.main,
+      backgroundColor: theme.palette.action.hover,
+      borderRadius: '8px'
+    },
+    '&.Mui-selected': {
+      color: theme.palette.primary.main
+    }
+  },
+  '& .MuiTabs-indicator': {
+    height: '3px',
+    borderRadius: '3px 3px 0 0',
+    backgroundColor: theme.palette.primary.main
   }
+}))
+
+const StyledSearchBox = styled(Box)(({ theme }) => ({
+  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+  borderRadius: '16px',
+  padding: '24px',
+  marginBottom: '32px',
+  boxShadow: theme.shadows[4]
 }))
 
 const HomePage: NextPage<TProps> = props => {
@@ -84,11 +129,32 @@ const HomePage: NextPage<TProps> = props => {
 
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
 
+  // Banner carousel state
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0)
+  const bannerImages = [
+    '/images/banner-home.jpg',
+    '/images/banner-2.jpg',
+    '/images/banner-3.jpg'
+    // Thêm các banner khác tại đây
+  ]
+
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     if (!firstRender.current) {
       firstRender.current = true
     }
     setProductTypeSelected(newValue)
+  }
+
+  const handleNextBanner = () => {
+    setCurrentBannerIndex((prev) => (prev + 1) % bannerImages.length)
+  }
+
+  const handlePrevBanner = () => {
+    setCurrentBannerIndex((prev) => (prev - 1 + bannerImages.length) % bannerImages.length)
+  }
+
+  const handleDotClick = (index: number) => {
+    setCurrentBannerIndex(index)
   }
 
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
@@ -212,6 +278,15 @@ const HomePage: NextPage<TProps> = props => {
     // fetchAllTypes()
   }, [])
 
+  // Auto-play banner carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prev) => (prev + 1) % bannerImages.length)
+    }, 5000) // Chuyển banner sau mỗi 5 giây
+
+    return () => clearInterval(interval)
+  }, [bannerImages.length])
+
   useEffect(() => {
     if (!isServerRendered.current && paramsServer && !!productTypesServer.length) {
       setPage(paramsServer.page)
@@ -283,17 +358,199 @@ const HomePage: NextPage<TProps> = props => {
       <Box
         sx={{
           height: '100%',
-          width: '100%'
+          width: '100%',
+          backgroundColor: 'background.default'
         }}
       >
-        <StyledTabs value={productTypeSelected} onChange={handleChange} aria-label='wrapped label tabs example'>
+        {/* Hero Banner Carousel Section */}
+        <Box
+          sx={{
+            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+            borderRadius: '16px',
+            marginBottom: '32px',
+            boxShadow: theme.shadows[8],
+            position: 'relative',
+            overflow: 'hidden',
+            height: { xs: '200px', sm: '250px', md: '300px', lg: '350px' }
+          }}
+        >
+          {/* Decorative Background Elements */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: -50,
+              right: -50,
+              width: 200,
+              height: 200,
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.1)',
+              filter: 'blur(60px)',
+              zIndex: 1
+            }}
+          />
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: -30,
+              left: -30,
+              width: 150,
+              height: 150,
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.08)',
+              filter: 'blur(50px)',
+              zIndex: 1
+            }}
+          />
+
+          {/* Banner Images Carousel */}
+          <Box
+            sx={{
+              position: 'relative',
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            {bannerImages.map((image, index) => (
+              <Box
+                key={index}
+                component='img'
+                src={image}
+                alt={`Banner ${index + 1}`}
+                sx={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'fill',
+                  objectPosition: 'center',
+                  opacity: currentBannerIndex === index ? 1 : 0,
+                  transition: 'opacity 0.8s ease-in-out',
+                  zIndex: 2,
+                  imageRendering: 'crisp-edges'
+                }}
+                onError={(e: any) => {
+                  // Fallback if image not found
+                  e.target.style.display = 'none'
+                }}
+              />
+            ))}
+          </Box>
+
+          {/* Previous Button */}
+          <IconButton
+            onClick={handlePrevBanner}
+            sx={{
+              position: 'absolute',
+              left: { xs: 8, md: 16 },
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 3,
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(10px)',
+              width: { xs: 36, md: 48 },
+              height: { xs: 36, md: 48 },
+              '&:hover': {
+                backgroundColor: 'white',
+                transform: 'translateY(-50%) scale(1.1)'
+              },
+              transition: 'all 0.3s'
+            }}
+          >
+            <Icon icon='solar:alt-arrow-left-bold' fontSize={24} style={{ color: theme.palette.primary.main }} />
+          </IconButton>
+
+          {/* Next Button */}
+          <IconButton
+            onClick={handleNextBanner}
+            sx={{
+              position: 'absolute',
+              right: { xs: 8, md: 16 },
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 3,
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(10px)',
+              width: { xs: 36, md: 48 },
+              height: { xs: 36, md: 48 },
+              '&:hover': {
+                backgroundColor: 'white',
+                transform: 'translateY(-50%) scale(1.1)'
+              },
+              transition: 'all 0.3s'
+            }}
+          >
+            <Icon icon='solar:alt-arrow-right-bold' fontSize={24} style={{ color: theme.palette.primary.main }} />
+          </IconButton>
+
+          {/* Dots Indicator */}
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 16,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              gap: 1.5,
+              zIndex: 3
+            }}
+          >
+            {bannerImages.map((_, index) => (
+              <Box
+                key={index}
+                onClick={() => handleDotClick(index)}
+                sx={{
+                  width: currentBannerIndex === index ? 32 : 10,
+                  height: 10,
+                  borderRadius: '5px',
+                  backgroundColor: currentBannerIndex === index ? 'white' : 'rgba(255, 255, 255, 0.5)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                  boxShadow: currentBannerIndex === index ? '0 2px 8px rgba(0,0,0,0.3)' : 'none',
+                  '&:hover': {
+                    backgroundColor: 'white',
+                    transform: 'scale(1.2)'
+                  }
+                }}
+              />
+            ))}
+          </Box>
+        </Box>
+
+        {/* Category Tabs */}
+        <StyledTabs
+          value={productTypeSelected}
+          onChange={handleChange}
+          aria-label='product categories'
+          variant='scrollable'
+          scrollButtons='auto'
+        >
           {optionTypes.map(opt => {
             return <Tab key={opt.value} value={opt.value} label={opt.label} />
           })}
         </StyledTabs>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-          <Box sx={{ display: 'flex', gap: '20px' }}>
-            <Box sx={{ width: '300px' }}>
+
+        {/* Search and Filter Bar */}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            mt: 4,
+            mb: 2,
+            gap: 2,
+            flexWrap: 'wrap'
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              flexDirection: { xs: 'column', sm: 'row' },
+              width: { xs: '100%', sm: 'auto' }
+            }}
+          >
+            <Box sx={{ width: { xs: '100%', sm: '300px' } }}>
               <CustomSelect
                 fullWidth
                 onChange={e => {
@@ -324,7 +581,7 @@ const HomePage: NextPage<TProps> = props => {
                 placeholder={t('Sort_by')}
               />
             </Box>
-            <Box sx={{ width: '300px' }}>
+            <Box sx={{ width: { xs: '100%', sm: '300px' } }}>
               <InputSearch
                 placeholder={t('Search_name_product')}
                 value={searchBy}
@@ -350,12 +607,19 @@ const HomePage: NextPage<TProps> = props => {
           <Grid
             container
             spacing={{
-              md: 6,
-              xs: 4
+              md: 4,
+              xs: 3
             }}
           >
             <Grid item md={3} display={{ md: 'flex', xs: 'none' }}>
-              <Box sx={{ width: '100%' }}>
+              <Box
+                sx={{
+                  width: '100%',
+                  position: 'sticky',
+                  top: 20,
+                  alignSelf: 'flex-start'
+                }}
+              >
                 <FilterProduct
                   locationSelected={locationSelected}
                   reviewSelected={reviewSelected}
@@ -370,8 +634,8 @@ const HomePage: NextPage<TProps> = props => {
                 <Grid
                   container
                   spacing={{
-                    md: 6,
-                    xs: 4
+                    md: 4,
+                    xs: 3
                   }}
                 >
                   {Array.from({ length: 6 }).map((_, index) => {
@@ -386,8 +650,8 @@ const HomePage: NextPage<TProps> = props => {
                 <Grid
                   container
                   spacing={{
-                    md: 6,
-                    xs: 4
+                    md: 4,
+                    xs: 3
                   }}
                 >
                   {productsPublic?.data?.length > 0 ? (
@@ -407,7 +671,7 @@ const HomePage: NextPage<TProps> = props => {
                   )}
                 </Grid>
               )}
-              {totalCount && (
+              {totalCount > 0 && (
                 <Box mt={6}>
                   <CustomPagination
                     onChangePagination={handleOnchangePagination}
