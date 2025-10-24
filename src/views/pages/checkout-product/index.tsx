@@ -6,17 +6,10 @@ import { Fragment, useEffect, useMemo, useState } from 'react'
 
 // ** Mui
 import {
-  Avatar,
   Box,
-  Button,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
   Typography,
-  useTheme
+  useTheme,
+  Grid
 } from '@mui/material'
 
 // ** Components
@@ -25,6 +18,10 @@ import NoData from 'src/components/no-data'
 import ModalAddAddress from 'src/views/pages/checkout-product/components/ModalAddAddress'
 import Spinner from 'src/components/spinner'
 import ModalWarning from 'src/views/pages/checkout-product/components/ModalWarning'
+import ShippingAddressCard from 'src/views/pages/checkout-product/components/ShippingAddressCard'
+import DeliveryMethodCard from 'src/views/pages/checkout-product/components/DeliveryMethodCard'
+import PaymentMethodCard from 'src/views/pages/checkout-product/components/PaymentMethodCard'
+import CheckoutOrderSummary from 'src/views/pages/checkout-product/components/CheckoutOrderSummary'
 
 // ** Translate
 import { t } from 'i18next'
@@ -32,7 +29,6 @@ import { useTranslation } from 'react-i18next'
 
 // ** Utils
 import { formatNumberToLocal, toFullName } from 'src/utils'
-import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
@@ -354,270 +350,78 @@ const CheckoutProductPage: NextPage<TProps> = () => {
       {loading || (isLoading && <Spinner />)}
       <ModalWarning open={openWarning} onClose={() => setOpenAddress(false)} />
       <ModalAddAddress open={openAddress} onClose={() => setOpenAddress(false)} />
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          padding: '40px',
-          width: '100%',
-          borderRadius: '15px',
-          mb: 6
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flexDirection: 'column' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-            <Icon icon='carbon:location' style={{ color: theme.palette.primary.main }} />
-
-            <Typography
-              variant='h6'
-              sx={{
-                fontWeight: 'bold',
-                fontSize: '18px',
-                color: theme.palette.primary.main
-              }}
-            >
-              {t('Address_shipping')}
-            </Typography>
-          </Box>
-          <Box>
-            {user && user?.addresses?.length > 0 ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Typography
-                  sx={{ color: `rgba(${theme.palette.customColors.main}, 0.78)`, fontSize: '18px', fontWeight: 'bold' }}
-                >
-                  {memoAddressDefault?.phoneNumber}{' '}
-                  {toFullName(
-                    memoAddressDefault?.lastName || '',
-                    memoAddressDefault?.middleName || '',
-                    memoAddressDefault?.firstName || '',
-                    i18n.language
-                  )}
-                </Typography>
-                <Typography component='span' sx={{ fontSize: '18px' }}>
-                  {memoAddressDefault?.address} {memoNameCity}
-                </Typography>
-                <Button sx={{ border: `1px solid ${theme.palette.primary.main}` }} onClick={() => setOpenAddress(true)}>
-                  {t('Change_address')}
-                </Button>
-              </Box>
-            ) : (
-              <Button sx={{ border: `1px solid ${theme.palette.primary.main}` }} onClick={() => setOpenAddress(true)}>
-                {t('Add_address')}
-              </Button>
-            )}
-          </Box>
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          padding: '40px',
-          width: '100%',
-          borderRadius: '15px'
-        }}
-      >
+      
+      <Box sx={{ p: 4 }}>
         {memoQueryProduct?.productsSelected?.length > 0 ? (
           <Fragment>
-            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: '8px', mb: '10px' }}>
-              <Typography sx={{ width: '80px', marginLeft: '20px', fontWeight: 600 }}>{t('Image')}</Typography>
-              <Typography sx={{ flexBasis: '35%', fontWeight: 600 }}>{t('Name_product')}</Typography>
-              <Typography sx={{ flexBasis: '20%', fontWeight: 600 }}>{t('Price_original')}</Typography>
-              <Typography sx={{ flexBasis: '20%', fontWeight: 600 }}>{t('Price_discount')}</Typography>
-              <Typography sx={{ flexBasis: '10%', fontWeight: 600 }}>{t('Count')}</Typography>
+            {/* Header */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, color: theme.palette.text.primary }}>
+                Thanh toán
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Hoàn tất đơn hàng của bạn
+              </Typography>
             </Box>
-            <Divider />
-            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '10px', mt: '10px' }}>
-              {memoQueryProduct?.productsSelected?.map((item: TItemOrderProduct, index: number) => {
-                return (
-                  <Fragment key={item.product}>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                      <Avatar sx={{ width: '100px', height: '100px' }} src={item.image} />
-                      <Typography
-                        sx={{
-                          fontSize: '20px',
-                          flexBasis: '35%',
-                          maxWidth: '100%',
-                          textOverflow: 'ellipsis',
-                          overflow: 'hidden',
-                          display: 'block',
-                          mt: 2
-                        }}
-                      >
-                        {item.name}
-                      </Typography>
-                      <Box sx={{ flexBasis: '20%' }}>
-                        <Typography
-                          variant='h6'
-                          mt={2}
-                          sx={{
-                            color: item.discount > 0 ? theme.palette.error.main : theme.palette.primary.main,
-                            fontWeight: 'bold',
-                            textDecoration: item.discount > 0 ? 'line-through' : 'normal',
-                            fontSize: '18px'
-                          }}
-                        >
-                          {formatNumberToLocal(item.price)} VND
-                        </Typography>
-                      </Box>
-                      <Box sx={{ flexBasis: '20%', display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {item.discount > 0 && (
-                          <Typography
-                            variant='h4'
-                            mt={2}
-                            sx={{
-                              color: theme.palette.primary.main,
-                              fontWeight: 'bold',
-                              fontSize: '18px'
-                            }}
-                          >
-                            {formatNumberToLocal((item.price * (100 - item.discount)) / 100)}
-                          </Typography>
-                        )}
-                        {item.discount > 0 && (
-                          <Box
-                            sx={{
-                              backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
-                              width: '36px',
-                              height: '14px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              borderRadius: '2px'
-                            }}
-                          >
-                            <Typography
-                              variant='h6'
-                              sx={{
-                                color: theme.palette.error.main,
-                                fontSize: '10px',
-                                whiteSpace: 'nowrap'
-                              }}
-                            >
-                              - {item.discount} %
-                            </Typography>
-                          </Box>
-                        )}
-                      </Box>
 
-                      <Box sx={{ flexBasis: '10%' }}>
-                        <Typography
-                          variant='h6'
-                          mt={2}
-                          sx={{
-                            color: theme.palette.primary.main,
-                            fontWeight: 'bold',
-                            fontSize: '18px'
-                          }}
-                        >
-                          {item.amount}
-                        </Typography>
-                      </Box>
-                    </Box>
-                    {index !== memoQueryProduct?.productsSelected?.length - 1 && <Divider />}
-                  </Fragment>
-                )
-              })}
-            </Box>
+            {/* Two Column Layout */}
+            <Grid container spacing={4}>
+              {/* Left Column - Checkout Details (60-65%) */}
+              <Grid item xs={12} lg={7}>
+                {/* Shipping Address */}
+                <ShippingAddressCard onOpenAddressModal={() => setOpenAddress(true)} />
+
+                {/* Delivery Method */}
+                <DeliveryMethodCard
+                  deliveryOptions={optionDeliveries}
+                  selectedDelivery={deliverySelected}
+                  onDeliveryChange={onChangeDelivery}
+                />
+
+                {/* Payment Method */}
+                <PaymentMethodCard
+                  paymentOptions={optionPayments}
+                  selectedPayment={paymentSelected}
+                  onPaymentChange={onChangePayment}
+                />
+              </Grid>
+
+              {/* Right Column - Order Summary (35-40%) */}
+              <Grid item xs={12} lg={5}>
+                <CheckoutOrderSummary
+                  products={memoQueryProduct.productsSelected}
+                  subtotal={Number(memoQueryProduct.totalPrice)}
+                  shippingFee={memoPriceShipping}
+                  onPlaceOrder={handleOrderProduct}
+                  isDisabled={!memoAddressDefault || !paymentSelected || !deliverySelected}
+                />
+              </Grid>
+            </Grid>
           </Fragment>
         ) : (
-          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <Box sx={{ padding: '20px', width: '200px' }}>
-              <NoData widthImage='80px' heightImage='80px' textNodata={t('No_product')} />
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center', 
+            justifyContent: 'center',
+            minHeight: '60vh',
+            textAlign: 'center'
+          }}>
+            <Box sx={{ mb: 3 }}>
+              <Icon 
+                icon='mdi:cart-outline' 
+                fontSize={80} 
+                style={{ color: theme.palette.grey[400] }}
+              />
             </Box>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary }}>
+              Không có sản phẩm để thanh toán
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+              Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.
+            </Typography>
           </Box>
         )}
-      </Box>
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          padding: '40px',
-          width: '100%',
-          borderRadius: '15px',
-          mt: 6
-        }}
-      >
-        <Box>
-          <FormControl sx={{ flexDirection: 'row !important', gap: 10 }}>
-            <FormLabel sx={{ color: theme.palette.primary.main, fontWeight: 600, width: '260px' }} id='delivery-group'>
-              {t('Select_delivery_type')}
-            </FormLabel>
-            <RadioGroup
-              sx={{ position: 'relative', top: '-6px' }}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeDelivery(e.target.value)}
-              aria-labelledby='delivery-group'
-              name='radio-delivery-group'
-            >
-              {optionDeliveries.map(delivery => {
-                return (
-                  <FormControlLabel
-                    key={delivery.value}
-                    value={delivery.value}
-                    control={<Radio checked={deliverySelected === delivery.value} />}
-                    label={delivery.label}
-                  />
-                )
-              })}
-            </RadioGroup>
-          </FormControl>
-        </Box>
-        <Box sx={{ mt: 4 }}>
-          <FormControl sx={{ flexDirection: 'row !important', gap: 10 }}>
-            <FormLabel sx={{ color: theme.palette.primary.main, fontWeight: 600, width: '260px' }} id='payment-group'>
-              {t('Select_payment_type')}
-            </FormLabel>
-            <RadioGroup
-              sx={{ position: 'relative', top: '-6px' }}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangePayment(e.target.value)}
-              aria-labelledby='payment-group'
-              name='radio-payment-group'
-            >
-              {optionPayments.map(payment => {
-                return (
-                  <FormControlLabel
-                    key={payment.value}
-                    value={payment.value}
-                    control={<Radio checked={paymentSelected === payment.value} />}
-                    label={payment.label}
-                  />
-                )
-              })}
-            </RadioGroup>
-          </FormControl>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column', gap: 2 }}>
-          <Box sx={{ display: 'flex', gap: '2px' }}>
-            <Typography sx={{ fontSize: '20px', width: '200px' }}>{t('Price_item')}:</Typography>
-            <Typography sx={{ fontSize: '20px', width: '200px' }}>
-              {formatNumberToLocal(memoQueryProduct.totalPrice)} VND
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: '2px' }}>
-            <Typography sx={{ fontSize: '20px', width: '200px' }}>{t('Price_shipping')}:</Typography>
-            <Typography sx={{ fontSize: '20px', width: '200px' }}>
-              {formatNumberToLocal(memoPriceShipping)} VND
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: '2px' }}>
-            <Typography sx={{ fontSize: '20px', width: '200px', fontWeight: 600 }}>{t('Sum_money')}:</Typography>
-            <Typography sx={{ fontSize: '20px', width: '200px', fontWeight: 600, color: theme.palette.primary.main }}>
-              {formatNumberToLocal(+memoQueryProduct.totalPrice + +memoPriceShipping)} VND
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-        <Button
-          onClick={handleOrderProduct}
-          variant='contained'
-          sx={{
-            height: 40,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '2px',
-            fontWeight: 'bold'
-          }}
-        >
-          {t('Đặt hàng')}
-        </Button>
       </Box>
     </>
   )

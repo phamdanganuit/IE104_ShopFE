@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 
 // ** Mui
-import { Box, Button, Checkbox, Divider, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
+import { Box, Checkbox, Typography, useTheme, Grid } from '@mui/material'
 
 // ** Components
 import Icon from 'src/components/Icon'
@@ -17,7 +17,7 @@ import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
 
 // ** Utils
-import { cloneDeep, formatNumberToLocal } from 'src/utils'
+import { cloneDeep } from 'src/utils'
 
 // ** Redux
 import { updateProductToCart } from 'src/stores/order-product'
@@ -32,7 +32,8 @@ import { useAuth } from 'src/hooks/useAuth'
 import { TItemOrderProduct } from 'src/types/order-product'
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { ROUTE_CONFIG } from 'src/configs/route'
-import ItemProductCart from 'src/views/pages/my-cart/components/ItemProductCart'
+import ProductCard from 'src/views/pages/my-cart/components/ProductCard'
+import OrderSummary from 'src/views/pages/my-cart/components/OrderSummary'
 
 type TProps = {}
 
@@ -70,12 +71,15 @@ const MyCartPage: NextPage<TProps> = () => {
 
   const memoTotalSelectedProduct = useMemo(() => {
     const total = memoItemsSelectedProduct?.reduce((result, current: TItemOrderProduct) => {
-      const currentPrice = current?.discount > 0 ? (current?.price * (100 - current?.discount)) / 100 : current?.price
+      // Calculate final price after discount
+      const finalPrice = current?.discount > 0 
+        ? (current?.price * (100 - current?.discount)) / 100 
+        : current?.price
 
-      return result + currentPrice * current?.amount
+      return result + finalPrice * current?.amount
     }, 0)
 
-    return total
+    return total || 0
   }, [memoItemsSelectedProduct])
 
   useEffect(() => {
@@ -110,20 +114,6 @@ const MyCartPage: NextPage<TProps> = () => {
     }
   }
 
-  const handleDeleteMany = () => {
-    const productCart = getLocalProductCart()
-    const parseData = productCart ? JSON.parse(productCart) : {}
-    const cloneOrderItems = cloneDeep(orderItems)
-    const filteredItems = cloneOrderItems.filter((item: TItemOrderProduct) => !selectedRows.includes(item.product))
-    if (user) {
-      dispatch(
-        updateProductToCart({
-          orderItems: filteredItems
-        })
-      )
-      setLocalProductToCart({ ...parseData, [user?._id]: filteredItems })
-    }
-  }
 
   const handleNavigateCheckoutProduct = () => {
     const formatData = JSON.stringify(
@@ -139,87 +129,89 @@ const MyCartPage: NextPage<TProps> = () => {
   }
 
   return (
-    <>
-      {/* {loading || (isLoading && <Spinner />)} */}
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          padding: '40px',
-          width: '100%',
-          borderRadius: '15px'
-        }}
-      >
-        {orderItems.length > 0 ? (
-          <Fragment>
-            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: '8px', mb: '10px' }}>
-              <Box sx={{ width: 'calc(10% - 100px)' }}>
-                <Tooltip title={t('Select_all')}>
+    <Box sx={{ p: 4 }}>
+      {orderItems.length > 0 ? (
+        <Fragment>
+          {/* Header */}
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, color: theme.palette.text.primary }}>
+              Giỏ hàng của bạn
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              {orderItems.length} sản phẩm trong giỏ hàng
+            </Typography>
+          </Box>
+
+          {/* Two Column Layout */}
+          <Grid container spacing={4}>
+            {/* Left Column - Product List (70%) */}
+            <Grid item xs={12} lg={8}>
+              <Box sx={{ mb: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                   <Checkbox
+                    checked={memoListAllProductIds.every(id => selectedRows.includes(id)) && memoListAllProductIds.length > 0}
                     onChange={handleChangeCheckAll}
-                    checked={memoListAllProductIds.every(id => selectedRows.includes(id))}
+                    sx={{
+                      '&.Mui-checked': {
+                        color: theme.palette.primary.main,
+                      },
+                    }}
                   />
-                </Tooltip>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Chọn tất cả ({memoListAllProductIds.length} sản phẩm)
+                  </Typography>
+                </Box>
               </Box>
-              <Typography sx={{ width: '80px', marginLeft: '20px', fontWeight: 600 }}>{t('Image')}</Typography>
-              <Typography sx={{ flexBasis: '35%', fontWeight: 600 }}>{t('Name_product')}</Typography>
-              <Typography sx={{ flexBasis: '20%', fontWeight: 600 }}>{t('Price_original')}</Typography>
-              <Typography sx={{ flexBasis: '20%', fontWeight: 600 }}>{t('Price_discount')}</Typography>
-              <Typography sx={{ flexBasis: '10%', fontWeight: 600 }}>{t('Count')}</Typography>
-              <Box sx={{ flexBasis: '5%', display: 'flex', justifyContent: 'flex-end' }}>
-                <Tooltip title={t('Delete_all')}>
-                  <IconButton disabled={!selectedRows.length} onClick={handleDeleteMany}>
-                    <Icon icon='mdi:delete-outline' />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            </Box>
-            <Divider />
-            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '10px', mt: '10px' }}>
-              {orderItems.map((item: TItemOrderProduct, index: number) => {
-                return (
-                  <ItemProductCart
-                    item={item}
-                    index={index}
+
+              {/* Product Cards */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {orderItems.map((item: TItemOrderProduct) => (
+                  <ProductCard
                     key={item.product}
+                    item={item}
                     selectedRows={selectedRows}
                     handleChangeCheckbox={handleChangeCheckbox}
                   />
-                )
-              })}
-            </Box>
-          </Fragment>
-        ) : (
-          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <Box sx={{ padding: '20px', width: '200px' }}>
-              <NoData widthImage='80px' heightImage='80px' textNodata={t('No_product')} />
-            </Box>
+                ))}
+              </Box>
+            </Grid>
+
+            {/* Right Column - Order Summary (30%) */}
+            <Grid item xs={12} lg={4}>
+              <OrderSummary
+                selectedItems={memoItemsSelectedProduct}
+                totalAmount={memoTotalSelectedProduct}
+                onProceedToCheckout={handleNavigateCheckoutProduct}
+                isDisabled={!selectedRows.length || !memoItemsSelectedProduct.length}
+              />
+            </Grid>
+          </Grid>
+        </Fragment>
+      ) : (
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          alignItems: 'center', 
+          justifyContent: 'center',
+          minHeight: '60vh',
+          textAlign: 'center'
+        }}>
+          <Box sx={{ mb: 3 }}>
+            <Icon 
+              icon='mdi:cart-outline' 
+              fontSize={80} 
+              style={{ color: theme.palette.grey[400] }}
+            />
           </Box>
-        )}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px' }}>
-          <Typography sx={{ fontSize: '24px', fontWeight: 600 }}>{t('Sum_money')}:</Typography>
-          <Typography sx={{ fontSize: '24px', fontWeight: 600, color: theme.palette.primary.main }}>
-            {formatNumberToLocal(memoTotalSelectedProduct)} VND
+          <Typography variant="h5" sx={{ fontWeight: 600, mb: 2, color: theme.palette.text.primary }}>
+            Giỏ hàng trống
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            Bạn chưa có sản phẩm nào trong giỏ hàng. Hãy khám phá và thêm sản phẩm yêu thích!
           </Typography>
         </Box>
-      </Box>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-        <Button
-          disabled={!selectedRows.length || !memoItemsSelectedProduct.length}
-          variant='contained'
-          onClick={handleNavigateCheckoutProduct}
-          sx={{
-            height: 40,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '2px',
-            fontWeight: 'bold'
-          }}
-        >
-          <Icon icon='icon-park-outline:buy' fontSize={20} style={{ position: 'relative', top: '-2px' }} />
-          {t('Buy_now')}
-        </Button>
-      </Box>
-    </>
+      )}
+    </Box>
   )
 }
 
